@@ -3,7 +3,7 @@ import jpcap.packet.Packet;
 
 class Tcpdump implements PacketReceiver {
 	public void receivePacket(Packet packet) {
-		System.out.println(packet);
+		System.out.println(packet.header);
 	}
 
 	public static void main(String[] args) throws Exception {
