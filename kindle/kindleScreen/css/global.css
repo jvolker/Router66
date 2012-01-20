@@ -1,0 +1,27 @@
+@font-face {
+                      font-family: 'GravurCondensed-Regular';
+                      src: url('GravuConReg.eot');
+     }
+
+@font-face {
+                      font-family: 'GravurCondensed-Regular';
+                      src: url('GravuConReg.woff') format('woff'),
+                      url('GravuConReg.svg#GravurCondensed-Regular') format('svg');
+     }
+
+* {
+	border: 0;
+	margin: 0;
+	font-family: "GravurCondensed-Regular", sans-serif;
+	text-align: left;
+}
+
+div#screen {
+	overflow: hidden;
+	padding: 20px;
+}
+
+div#text {
+	font-size: 40px;
+	/*-webkit-transform: rotateZ(90deg);*/
+}
