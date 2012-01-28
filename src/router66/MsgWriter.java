@@ -9,6 +9,10 @@ public class MsgWriter {
 		String msg = sMsg.getClient()+" looks at "+sMsg.getServer();
 		writeOut(msg);
 	}
+	public void wSSLDomain(SortMsg sMsg){
+		String msg = sMsg.getClient()+" secrets are at "+sMsg.getServer();
+		writeOut(msg);
+	}
 	public void wSearchGoogle(SortMsg sMsg){
 		String msg = sMsg.getClient()+" searched for È"+sMsg.getAddArgs()[0]+"Ç";
 		writeOut(msg);

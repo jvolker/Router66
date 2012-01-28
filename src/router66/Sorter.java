@@ -57,21 +57,21 @@ public class Sorter{
 					String googleReturn=getGoogleSearchString(thePacket);
 					if(googleReturn!=null){
 						try {
-							msgWriter.wSearchGoogle(new SortMsg(HostDict.HOSTS.get(((TCPPacket) packet).src_ip.getHostAddress()), "", URLDecoder.decode(googleReturn.replace("+", " "),"UTF-8")));
+							msgWriter.wSearchGoogle(new SortMsg(translateLocalHost(((TCPPacket) packet).src_ip.getHostAddress()), "", URLDecoder.decode(googleReturn.replace("+", " "),"UTF-8")));
 						} catch (UnsupportedEncodingException e) {
 							e.printStackTrace();
 						}
 					}else{
 						//System.out.println(extractHost(thePacket));
 						//System.out.println(((TCPPacket) packet).src_ip.getHostAddress());
-						msgWriter.wWebDomain(new SortMsg(HostDict.HOSTS.get(((TCPPacket) packet).src_ip.getHostAddress()), extractHost(thePacket)));
+						msgWriter.wSSLDomain(new SortMsg(HostDict.HOSTS.get(((TCPPacket) packet).src_ip.getHostAddress()), extractHost(thePacket)));
 						//addMsg(new WriteMsg(extractHost(thePacket), System.currentTimeMillis()));
 					//}
 					}
 					break;
 				// SSL
 				case 443:
-					//System.out.println("ssl");
+					msgWriter.wWebDomain(new SortMsg(HostDict.HOSTS.get(((TCPPacket) packet).src_ip.getHostAddress()), extractHost(thePacket)));
 					//System.out.println(dst.indexOf("facebook"));
 					break;
 				case 1515:
@@ -202,5 +202,14 @@ public class Sorter{
 			hostname = lines[1].substring(6,lines[1].length()-1);
 		}
 		return hostname;
+	}
+	
+	public String translateLocalHost(String ip){
+		String host = HostDict.HOSTS.get(ip);
+		if(host==null){
+			return ip;
+		}else{
+			return host;	
+		}
 	}
 }
