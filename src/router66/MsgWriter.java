@@ -17,6 +17,10 @@ public class MsgWriter {
 		String msg = sMsg.getClient()+" searched for È"+sMsg.getAddArgs()[0]+"Ç";
 		writeOut(msg);
 	}
+	public void wDropboxLan(SortMsg sMsg){
+		String msg = sMsg.getClient()+"'s Dropbox is looking for friends.";
+		writeOut(msg);
+	}
 	
 	private void writeOut(String msg){
 		writer.addMsg(new WriteMsg(msg,System.currentTimeMillis()));

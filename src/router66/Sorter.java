@@ -54,6 +54,9 @@ public class Sorter{
 					//if(!validateIPAddress(dst)){
 					//System.out.println("web");
 					//System.out.println(convertHeader(thePacket));
+					/**
+					 * Google Search
+					 */
 					String googleReturn=getGoogleSearchString(thePacket);
 					if(googleReturn!=null){
 						try {
@@ -62,16 +65,22 @@ public class Sorter{
 							e.printStackTrace();
 						}
 					}else{
-						//System.out.println(extractHost(thePacket));
-						//System.out.println(((TCPPacket) packet).src_ip.getHostAddress());
-						msgWriter.wSSLDomain(new SortMsg(HostDict.HOSTS.get(((TCPPacket) packet).src_ip.getHostAddress()), extractHost(thePacket)));
-						//addMsg(new WriteMsg(extractHost(thePacket), System.currentTimeMillis()));
+						/**
+						 * Standard Website
+						 */
+						msgWriter.wWebDomain(new SortMsg(HostDict.HOSTS.get(((TCPPacket) packet).src_ip.getHostAddress()), extractHost(thePacket)));
+						
 					//}
 					}
 					break;
 				// SSL
 				case 443:
-					msgWriter.wWebDomain(new SortMsg(HostDict.HOSTS.get(((TCPPacket) packet).src_ip.getHostAddress()), extractHost(thePacket)));
+					/**
+					 * 	Encrypted Stuff
+					 */
+					if(!validateIPAddress(thePacket.dst_ip.getHostName())){
+						msgWriter.wSSLDomain(new SortMsg(HostDict.HOSTS.get(((TCPPacket) packet).src_ip.getHostAddress()),thePacket.dst_ip.getHostName()));	
+					}
 					//System.out.println(dst.indexOf("facebook"));
 					break;
 				case 1515:
@@ -90,7 +99,7 @@ public class Sorter{
 				switch (((UDPPacket)packet).dst_port) {
 				// DROPBOX
 				case 17500:
-					//System.out.println(convertData(packet));
+					msgWriter.wDropboxLan(new SortMsg(HostDict.HOSTS.get(((TCPPacket) packet).src_ip.getHostAddress()), ""));
 					break;
 				// BROWSER
 				case 138:
