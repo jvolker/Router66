@@ -17,6 +17,9 @@ import jpcap.packet.UDPPacket;
 public class Sorter{
 	final static Pattern googleSearchPattern = Pattern.compile("\\&q\\=(.*?)\\s");
 	private MsgWriter msgWriter;
+	
+	private PacketReceiverImpl pri;
+	
 	public Sorter(MsgWriter msgWriter){
 		this.msgWriter = msgWriter;
 	}
@@ -65,11 +68,19 @@ public class Sorter{
 							e.printStackTrace();
 						}
 					}else{
+						String host = extractHost(thePacket);
+						String client = HostDict.HOSTS.get(((TCPPacket) packet).src_ip.getHostAddress());
+						/**
+						 * dropbox Web
+						 */
+						if(host.indexOf("dropbox")!=-1){
+							msgWriter.wDropboxWeb(new SortMsg(client, ""));
+						}else{
 						/**
 						 * Standard Website
 						 */
-						msgWriter.wWebDomain(new SortMsg(HostDict.HOSTS.get(((TCPPacket) packet).src_ip.getHostAddress()), extractHost(thePacket)));
-						
+						msgWriter.wWebDomain(new SortMsg(client, host));
+						}
 					//}
 					}
 					break;
@@ -103,7 +114,8 @@ public class Sorter{
 					break;
 				// BROWSER
 				case 138:
-					System.out.println("BROWSER: "+convertData(packet).toString());
+					System.out.println(pri.translateNetbios(packet));
+					//System.out.println("BROWSER: "+ ((UDPPacket)packet).);
 					break;
 				default:
 					break;
