@@ -1,6 +1,9 @@
 package router66;
 
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,16 +16,18 @@ import jpcap.packet.UDPPacket;
 
 public class Sorter{
 	final static Pattern googleSearchPattern = Pattern.compile("\\&q\\=(.*?)\\s");
-	
-	public void sortPacket(Packet packet) {
+	private MsgWriter msgWriter;
+	public Sorter(MsgWriter msgWriter){
+		this.msgWriter = msgWriter;
+	}
+	public void sortPacket(Packet packet){
 		String dst = null;
 		String src = null;
-		System.out.println();
+		
 		if(packet instanceof TCPPacket ){
 			TCPPacket thePacket = ((TCPPacket)packet);
 			dst = getHostName(thePacket.dst_ip);
 			src = getHostName(thePacket.src_ip);
-//			System.out.println(dst);
 //			try {
 //				InetAddress t = InetAddress.getAllByName("hanuman.local")[0];
 //				System.out.println(InetAddress.getAllByName("hanuman.local")[0]);
@@ -36,6 +41,7 @@ public class Sorter{
 			switch (((TCPPacket)packet).src_port) {
 			case 80:
 			//	System.out.println(convertData(packet));
+//				System.out.println(packet);
 				break;
 				default:
 					break;
@@ -45,15 +51,22 @@ public class Sorter{
 				 * 	http package
 				 */
 				case 80:
-					if(!validateIPAddress(dst)){
+					//if(!validateIPAddress(dst)){
 					//System.out.println("web");
 					//System.out.println(convertHeader(thePacket));
 					String googleReturn=getGoogleSearchString(thePacket);
 					if(googleReturn!=null){
-						System.out.println(googleReturn);
+						try {
+							msgWriter.wSearchGoogle(new SortMsg(HostDict.HOSTS.get(((TCPPacket) packet).src_ip.getHostAddress()), "", URLDecoder.decode(googleReturn.replace("+", " "),"UTF-8")));
+						} catch (UnsupportedEncodingException e) {
+							e.printStackTrace();
+						}
 					}else{
-						System.out.println(extractHost(thePacket));
-					}
+						//System.out.println(extractHost(thePacket));
+						//System.out.println(((TCPPacket) packet).src_ip.getHostAddress());
+						msgWriter.wWebDomain(new SortMsg(HostDict.HOSTS.get(((TCPPacket) packet).src_ip.getHostAddress()), extractHost(thePacket)));
+						//addMsg(new WriteMsg(extractHost(thePacket), System.currentTimeMillis()));
+					//}
 					}
 					break;
 				// SSL
@@ -81,7 +94,7 @@ public class Sorter{
 					break;
 				// BROWSER
 				case 138:
-					System.out.println("BROWSER: "+packet.toString());
+					System.out.println("BROWSER: "+convertData(packet).toString());
 					break;
 				default:
 					break;

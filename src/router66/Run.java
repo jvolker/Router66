@@ -17,7 +17,9 @@ import jpcap.PacketReceiver;
 import jpcap.packet.*;
 
 public class Run implements PacketReceiver {
-	private Sorter sorter = new Sorter();
+	private Writer writer = new Writer();
+	private MsgWriter msgWriter = new MsgWriter(writer);
+	private Sorter sorter = new Sorter(msgWriter);
 	public void receivePacket(Packet packet) {
 		String dst = null;
 		String src = null;
@@ -33,19 +35,22 @@ public class Run implements PacketReceiver {
 	 */
 	public static void main(String[] args) throws Exception{
 		NetworkInterface[] devices = JpcapCaptor.getDeviceList();
-		JpcapCaptor jpcap = JpcapCaptor.openDevice(devices[3], 2000, false, 20);
-		for (int i = 0; i < devices.length; i++) {
-			System.out.println(i+" :"+devices[i].name + "(" + devices[i].description+")");
-			System.out.println("    data link:"+devices[i].datalink_name + "("
-					+ devices[i].datalink_description+")");
-			System.out.print("    MAC address:");
-			for (byte b : devices[i].mac_address)
-				System.out.print(Integer.toHexString(b&0xff) + ":");
-			System.out.println();
-			for (NetworkInterfaceAddress a : devices[i].addresses)
-				System.out.println("    address:"+a.address + " " + a.subnet + " "
-						+ a.broadcast);
-		}
+		JpcapCaptor jpcap = JpcapCaptor.openDevice(devices[2], 2000, false, 20);
+		/**
+		 * List Network Interfaces
+		 */
+//		for (int i = 0; i < devices.length; i++) {
+//			System.out.println(i+" :"+devices[i].name + "(" + devices[i].description+")");
+//			System.out.println("    data link:"+devices[i].datalink_name + "("
+//					+ devices[i].datalink_description+")");
+//			System.out.print("    MAC address:");
+//			for (byte b : devices[i].mac_address)
+//				System.out.print(Integer.toHexString(b&0xff) + ":");
+//			System.out.println();
+//			for (NetworkInterfaceAddress a : devices[i].addresses)
+//				System.out.println("    address:"+a.address + " " + a.subnet + " "
+//						+ a.broadcast);
+//		}
 		jpcap.loopPacket(-1, new Run());
 	}
 	
