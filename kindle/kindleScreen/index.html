@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" manifest="cache.manifest">
+<!--<html lang="en" manifest="cache.manifest">-->
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <title>KindleScreen</title>
@@ -13,22 +14,42 @@
 	
 	<script type="text/javascript">
 	$(document).ready(function() {
-		 refreshText = function() {
+		var delay = 100;
+		var content = "...";
+		var displayedLength = 0;
+		
+		getContent = function() {
 			var xmlhttp=new XMLHttpRequest();
 	
 			xmlhttp.onreadystatechange=function() {
 		  		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-		    		$('#text').html(xmlhttp.responseText);
+					content = xmlhttp.responseText;
+					displayedLength = 120;
+					writeText();
 		    	}
 		  	}
 	
 			xmlhttp.open("GET","helloClient.txt",true);
 			xmlhttp.send();
-			
-			setTimeout("refreshText()",500); 
 		}
-
-		setTimeout("refreshText()",500); 
+		writeText = function() {
+			if (displayedLength<=content.length) {
+				$('#text').html(content.substr(0,displayedLength));
+				displayedLength++;
+				setTimeout(function () { writeText() },130); 
+			}		
+			else {
+				setTimeout(function () { 
+					$('body').css("background-color","black");
+					setTimeout(function () { 
+						$('body').css("background-color","white");
+						getContent(); 
+					},50);
+				},1500);
+			}
+		}
+			
+		setTimeout("getContent()",0);
 	});
 	</script>
 	

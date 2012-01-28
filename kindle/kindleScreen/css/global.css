@@ -12,7 +12,8 @@
 * {
 	border: 0;
 	margin: 0;
-	font-family: "GravurCondensed-Regular", sans-serif;
+	font-family: "GravurCondensed-Regular", sans-serif;*
+	/*font-family: Verdana;*/
 	text-align: left;
 }
 
@@ -22,6 +23,8 @@ div#screen {
 }
 
 div#text {
-	font-size: 40px;
-	/*-webkit-transform: rotateZ(90deg);*/
+	font-size: 60px; /* 30px */
+	height: 466px;
+	width 150px;
+	-webkit-transform: rotateZ(180deg);
 }
