@@ -15,14 +15,17 @@ public class Writer extends PApplet{
 	private String request;
 	
 	
-	public Writer(){
-		
+	public Writer(){	
+		setup();
+	}
+	
+	public void dispose(){
+	}	
+	public void setup(){
+		s = new Server(this, 12345); // Start a simple server on a port
 		System.out.println("Socket Server Started");
 	}
 	
-	public void setup(){
-		s = new Server(this, 12345); // Start a simple server on a port
-	}
 	public void addMsg(WriteMsg msg){
 		writeMsgs.add(msg);
 		System.out.println("Writer: "+writeMsgs.lastElement().getMsg());
