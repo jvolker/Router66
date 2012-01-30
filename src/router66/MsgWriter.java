@@ -21,6 +21,10 @@ public class MsgWriter {
 		String msg = sMsg.getClient()+"'s Dropbox is looking for friends.";
 		writeOut(msg);
 	}
+	public void wDropboxWeb(SortMsg sMsg){
+		String msg = sMsg.getClient()+"'s Dropbox checks for updates on the interwebz.";
+		writeOut(msg);
+	}
 	
 	private void writeOut(String msg){
 		writer.addMsg(new WriteMsg(msg,System.currentTimeMillis()));
