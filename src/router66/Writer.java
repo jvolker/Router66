@@ -7,22 +7,23 @@ import processing.core.PApplet;
 import processing.net.Client;
 import processing.net.Server;
 
-public class Writer extends PApplet{
+public class Writer {
 	private Vector<WriteMsg> writeMsgs = new Vector<WriteMsg>();
 	private PrintWriter output;
 	private Server s;
 	private Client c;
 	private String request;
+	private PApplet p5;
 	
-	
-	public Writer(){	
+	public Writer(PApplet p5){	
 		setup();
+		this.p5 = p5;
 	}
 	
 	public void dispose(){
 	}	
 	public void setup(){
-		s = new Server(this, 12345); // Start a simple server on a port
+		s = new Server(p5, 12345); // Start a simple server on a port
 		System.out.println("Socket Server Started");
 	}
 	
@@ -35,7 +36,7 @@ public class Writer extends PApplet{
 	private void writeFile(String sentence) {
 		//String[] list = split(sentence, ' ');
 
-		output = createWriter("kindle/kindleScreen/helloClient.txt");
+		output = p5.createWriter("kindle/kindleScreen/helloClient.txt");
 
 		//for (int x = 0; x < y; x++) {
 		//	output.println(list[x]); // Write the coordinate to the file
@@ -47,12 +48,12 @@ public class Writer extends PApplet{
 	}
 	
 	public void serverEvent(Server someServer, Client someClient) {
-		println("We have a new request by: " + someClient.ip());
+		p5.println("We have a new request by: " + someClient.ip());
 		
 		//answer text request
 		request = someClient.readString();
 		
-	    println(request);
+	    p5.println(request);
 	    someClient.write(writeMsgs.lastElement().getMsg()); // OUTPUT HERE
 	    someServer.disconnect(c);
 
