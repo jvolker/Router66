@@ -26,7 +26,6 @@ public class Sorter{
 	public void sortPacket(Packet packet){
 		String dst = null;
 		String src = null;
-		
 		if(packet instanceof TCPPacket ){
 			TCPPacket thePacket = ((TCPPacket)packet);
 			dst = getHostName(thePacket.dst_ip);
