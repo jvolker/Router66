@@ -23,13 +23,18 @@
 	
 			xmlhttp.onreadystatechange=function() {
 		  		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-					content = xmlhttp.responseText;
-					displayedLength = 0;
-					writeText();
+					if (content != xmlhttp.responseText) {
+						displayedLength = 0;
+					    content = xmlhttp.responseText;
+                   		writeText();
+					}
+					
 		    	}
 		  	}
 	
-			xmlhttp.open("GET","helloClient.txt",true);
+			  
+			//xmlhttp.open("GET","helloClient.txt",true);
+			xmlhttp.open("GET","textReceiver.php",true);
 			xmlhttp.send();
 		}
 		writeText = function() {
