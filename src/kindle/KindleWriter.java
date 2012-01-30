@@ -3,26 +3,28 @@ package kindle;
 import java.io.PrintWriter;
 
 import processing.core.*;
+import processing.net.*;
 
 public class KindleWriter extends PApplet {
-	PrintWriter output;
+	Server s;
+	Client c;
+	
+	String request;
 
 	public KindleWriter() {
-		//writeFile("Hello Client!");
+		s = new Server(this, 12345); // Start a simple server on a port
 	}
+	
+	void serverEvent(Server someServer, Client someClient) {
+		println("We have a new request by: " + someClient.ip());
+		
+		//answer text request
+		request = someClient.readString();
+		
+	    println(request);
+	    someClient.write("Output this!"+frameCount); // OUTPUT HERE
+	    someServer.disconnect(c);
 
-	public void writeFile(String sentence) {
-		//String[] list = split(sentence, ' ');
-
-		output = createWriter("kindle/kindleScreen/helloClient.txt");
-
-		//for (int x = 0; x < y; x++) {
-		//	output.println(list[x]); // Write the coordinate to the file
-		//}
-		output.println(sentence);
-
-		output.flush(); // Writes the remaining data to the file
-		output.close(); // Finishes the file
 	}
 
 }

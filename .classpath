@@ -11,5 +11,6 @@
 	<classpathentry kind="lib" path="lib/carnivore.jar"/>
 	<classpathentry kind="lib" path="lib/rsglib.jar"/>
 	<classpathentry kind="lib" path="lib/core.jar"/>
+	<classpathentry kind="lib" path="lib/net.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
