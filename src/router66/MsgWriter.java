@@ -13,7 +13,7 @@ public class MsgWriter {
 		/**
 		 * the randomizer picks a message
 		 */
-		int rMsg = (int)(Math.random()*1);
+		int rMsg = (int)(Math.random()*2);
 		String msg = null;
 		switch(rMsg){
 			case 0:
@@ -21,6 +21,8 @@ public class MsgWriter {
 				break;
 			case 1:
 				msg = "At "+sMsg.getServer()+" "+sMsg.getClient()+" hides his secrets";
+				break;
+			default:
 				break;
 		}
 		writeOut(msg, sMsg);
@@ -49,6 +51,18 @@ public class MsgWriter {
 			theServer=sMsg.getServer();
 		}
 		String msg = sMsg.getClient()+" checks mails at "+theServer;
+		writeOut(msg, sMsg);
+	}
+	public void wEvernote(SortMsg sMsg){
+		String msg = sMsg.getClient()+" is writing something down on Evernote";
+		writeOut(msg, sMsg);
+	}
+	public void wAdvertising(SortMsg sMsg){
+		String msg = sMsg.getClient()+" got some nice Ad-Banners";
+		writeOut(msg, sMsg);
+	}
+	public void wWikipedia(SortMsg sMsg){
+		String msg = sMsg.getClient()+" learns on wikipedia something about È"+sMsg.getAddArgs()[0]+"Ç";
 		writeOut(msg, sMsg);
 	}
 	

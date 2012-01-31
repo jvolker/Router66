@@ -34,8 +34,8 @@ public class Writer {
 	}
 	private Boolean checkRecentMsgs(WriteMsg msg){
 		Boolean isKnown = false;
-		if(writeMsgs.size()>4){
-			for(int i=1; i<4; i++){
+		if(writeMsgs.size()>2){
+			for(int i=1; i<2; i++){
 				if(msg.getSMsg().getServer().equals(writeMsgs.get(writeMsgs.size()-i).getSMsg().getServer())){
 					isKnown=true;
 					break;

@@ -18,12 +18,15 @@ import jpcap.packet.UDPPacket;
 
 public class Sorter{
 	final static Pattern googleSearchPattern = Pattern.compile("\\&q\\=(.*?)\\s");
-	
+	//final static Pattern mdnsNamePattern = Pattern.compile("\\\0+(.*?)"); 
+	final static Pattern mdnsNamePattern = Pattern.compile(".*?([A-Za-z0-9]+?)[\\\t*?|\\\0*?]");
 	static Vector<String> blackUrlList = new Vector<String>();
 	static {
 		blackUrlList.add("ytimg");
 		blackUrlList.add("gstatic");
-		blackUrlList.add("doubleclick");
+//		blackUrlList.add("doubleclick");
+		blackUrlList.add("wikimedia");
+		blackUrlList.add("chartbeat");
 	}
 	
 	private MsgWriter msgWriter;
@@ -42,6 +45,7 @@ public class Sorter{
 			TCPPacket thePacket = ((TCPPacket)packet);
 			dst = getHostName(thePacket.dst_ip);
 			src = getHostName(thePacket.src_ip);
+
 			String host = extractHost(thePacket);
 			String client = HostDict.HOSTS.get(((TCPPacket) packet).src_ip.getHostAddress());			
 			switch (((TCPPacket)packet).dst_port) {
@@ -71,6 +75,25 @@ public class Sorter{
 						 */
 						else if(host.indexOf("youtube")!=-1){
 							msgWriter.wYoutubeWatch(new SortMsg(client, ""));
+						}	
+					 	/**
+						 * Advertising
+						 */
+						else if(host.indexOf("doubleclick")!=-1){
+							msgWriter.wAdvertising(new SortMsg(client, ""));
+						}
+					 	/**
+						 * Wikipedia
+						 */
+						else if(host.indexOf("wikipedia")!=-1){
+							try {
+								msgWriter.wWikipedia(new SortMsg(translateLocalHost(((TCPPacket) packet).src_ip.getHostAddress()), "", URLDecoder.decode(extractWikipediaPage(thePacket).replace("_", " "),"UTF-8")));
+							} catch (UnsupportedEncodingException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							
+							//msgWriter.wAdvertising(new SortMsg(client, ""));
 						}
 						/**
 						 * Standard Website
@@ -102,6 +125,7 @@ public class Sorter{
 						if(sslHost.indexOf("1e100")!=-1){
 							//System.out.println("google ssl");
 						}else if(sslHost.indexOf("evernote")!=-1){
+							msgWriter.wEvernote(new SortMsg(HostDict.getHost(((TCPPacket) packet).src_ip.getHostAddress()),""));
 							//System.out.println("evernote ssl");
 						}else{
 							msgWriter.wSSLDomain(new SortMsg(HostDict.getHost(((TCPPacket) packet).src_ip.getHostAddress()),thePacket.dst_ip.getHostName()));
@@ -125,9 +149,10 @@ public class Sorter{
 				}
 				}
 			if(packet instanceof UDPPacket){
-			if(((UDPPacket)packet).protocol==17){
+				UDPPacket udpPacket = (UDPPacket)packet;
+			if(udpPacket.protocol==17){
 				//System.out.println("UPD: "+packet);
-				switch (((UDPPacket)packet).dst_port) {
+				switch (udpPacket.dst_port) {
 				// DROPBOX
 				case 17500:
 					msgWriter.wDropboxLan(new SortMsg(HostDict.HOSTS.get(((TCPPacket) packet).src_ip.getHostAddress()), ""));
@@ -137,6 +162,17 @@ public class Sorter{
 					System.out.println(pri.translateNetbios(packet));
 					//System.out.println("BROWSER: "+ ((UDPPacket)packet).);
 					break;
+				// MDNS aka Bonjour
+//				case 5353:
+//					String header = convertData(udpPacket);
+//					Matcher m = mdnsNamePattern.matcher(header);
+//					String mdnsName=null;
+//					while (m.find()) {
+//						mdnsName = m.group(1);
+//					    // s now contains "BAR"
+//					}
+//					System.out.println("MDNS: Aus "+convertData(udpPacket)+" wird "+mdnsName);
+//					break;
 				default:
 					break;
 				}
@@ -188,7 +224,7 @@ public class Sorter{
         System.arraycopy(p.data,0,bytes,0,p.data.length); 
         String text = new String(bytes); 
         return text; 
-	} 
+	}
 	
 	public final static String convertHeader(Packet p){ 
 		byte[] bytes=new byte[p.header.length]; 
@@ -243,6 +279,16 @@ public class Sorter{
 			hostname = lines[1].substring(6,lines[1].length()-1);
 		}
 		return hostname;
+	}
+	
+	public final static String extractWikipediaPage(TCPPacket p){
+		String pagename=null;
+		String[] lines = convertData(p).split("\n");
+		if(lines[6].substring(0,7).equals("Referer")){
+			String[] words = lines[6].split("wiki/");
+			pagename = words[1].substring(0, words[1].length()-1);
+		}
+		return pagename;
 	}
 	
 	public String translateLocalHost(String ip){
