@@ -39,18 +39,18 @@ public class Run implements PacketReceiver {
 		/**
 		 * List Network Interfaces
 		 */
-//		for (int i = 0; i < devices.length; i++) {
-//			System.out.println(i+" :"+devices[i].name + "(" + devices[i].description+")");
-//			System.out.println("    data link:"+devices[i].datalink_name + "("
-//					+ devices[i].datalink_description+")");
-//			System.out.print("    MAC address:");
-//			for (byte b : devices[i].mac_address)
-//				System.out.print(Integer.toHexString(b&0xff) + ":");
-//			System.out.println();
-//			for (NetworkInterfaceAddress a : devices[i].addresses)
-//				System.out.println("    address:"+a.address + " " + a.subnet + " "
-//						+ a.broadcast);
-//		}
+		for (int i = 0; i < devices.length; i++) {
+			System.out.println(i+" :"+devices[i].name + "(" + devices[i].description+")");
+			System.out.println("    data link:"+devices[i].datalink_name + "("
+					+ devices[i].datalink_description+")");
+			System.out.print("    MAC address:");
+			for (byte b : devices[i].mac_address)
+				System.out.print(Integer.toHexString(b&0xff) + ":");
+			System.out.println();
+			for (NetworkInterfaceAddress a : devices[i].addresses)
+				System.out.println("    address:"+a.address + " " + a.subnet + " "
+						+ a.broadcast);
+		}
 		jpcap.loopPacket(-1, new Run());
 	}
 	
