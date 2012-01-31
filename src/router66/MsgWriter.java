@@ -25,6 +25,21 @@ public class MsgWriter {
 		String msg = sMsg.getClient()+"'s Dropbox checks for updates on the interwebz.";
 		writeOut(msg, sMsg);
 	}
+	public void wYoutubeWatch(SortMsg sMsg){
+		String msg = sMsg.getClient()+" is watching youtube.";
+		writeOut(msg, sMsg);
+	}
+	public void wIMAP(SortMsg sMsg){
+		String theServer;
+		if(sMsg.getServer().indexOf("1e100")!=-1){
+			theServer="googlemail";
+		}else{
+			theServer=sMsg.getServer();
+		}
+		String msg = sMsg.getClient()+" checks mails at "+theServer;
+		writeOut(msg, sMsg);
+	}
+	
 	
 	private void writeOut(String msg, SortMsg sMsg){
 		writer.addMsg(new WriteMsg(msg,System.currentTimeMillis(),sMsg));

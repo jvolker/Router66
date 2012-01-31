@@ -18,7 +18,7 @@ import jpcap.packet.UDPPacket;
 
 public class Sorter{
 	final static Pattern googleSearchPattern = Pattern.compile("\\&q\\=(.*?)\\s");
-	final static Pattern youtubeSearchPattern = Pattern.compile("\\?search_query\\=(.*?)\\&");
+	
 	static Vector<String> blackUrlList = new Vector<String>();
 	static {
 		blackUrlList.add("ytimg");
@@ -27,7 +27,6 @@ public class Sorter{
 	}
 	
 	private MsgWriter msgWriter;
-	private Boolean blackListed = false;
 	private PacketReceiverImpl pri;
 	
 	public Sorter(MsgWriter msgWriter){
@@ -49,33 +48,28 @@ public class Sorter{
 //			}
 			//System.out.println(new String(thePacket.toString()));
 
-				//System.out.println(dst+" : "+((TCPPacket)packet).dst_port);
-			switch (((TCPPacket)packet).src_port) {
-			case 80:
-			//	System.out.println(convertData(packet));
-//				System.out.println(packet);
-				break;
-				default:
-					break;
-			}
 			
 			String host = extractHost(thePacket);
-			String client = HostDict.HOSTS.get(((TCPPacket) packet).src_ip.getHostAddress());
-			
+			String client = HostDict.HOSTS.get(((TCPPacket) packet).src_ip.getHostAddress());			
 			/**
 			 *  Checks against the Blacklist and prevent the package from being inspected
 			 */
-			Iterator<String> itr = blackUrlList.iterator();
-				while(itr.hasNext()){
-				 	if(host.indexOf(itr.next())!=-1){
-				 		blackListed=true;
-				 	}
-				}
-				
-			if(blackListed){
-					blackListed=false;
-				}else{
-			
+//			for (int i = 0; i < blackUrlList.size(); i++) {
+//				System.out.println(host.indexOf(blackUrlList.get(i)));
+//				if(host.indexOf(blackUrlList.get(i))!=-1){
+//					blackListed= true;
+//				}
+//			}
+//			Iterator<String> itr = blackUrlList.iterator();
+//				while(itr.hasNext()){
+//					//System.out.println(itr.hasNext());
+//					String c = itr.next();
+//				 	if(host.indexOf(c)!=-1){
+//				 		blackListed=true;
+//				 	}
+//			}
+			//System.out.println("unfiltered: "+thePacket.dst_port);	
+					
 			/**
 			 * Package isn't blacklisted, so let's look 
 			 */
@@ -105,13 +99,22 @@ public class Sorter{
 						 *  Youtube Web
 						 */
 						else if(host.indexOf("youtube")!=-1){
-							System.out.println(getYoutubeSearchString(thePacket));
+							msgWriter.wYoutubeWatch(new SortMsg(client, ""));
 						}
 						/**
 						 * Standard Website
 						 */
 						else{
-							msgWriter.wWebDomain(new SortMsg(client, host));
+							Boolean blackListed = false;
+							Iterator<String> itr = blackUrlList.iterator();
+							while(itr.hasNext()){
+							 	if(host.indexOf(itr.next())!=-1){
+							 		blackListed = true;
+							 	}
+							}
+							if(!blackListed){
+								msgWriter.wWebDomain(new SortMsg(client, host));
+							}
 						}
 				/**
 				 * SSL Port
@@ -139,11 +142,15 @@ public class Sorter{
 				case 631:
 					System.out.println("CUPS: "+packet.toString());
 					break;
+				// IMAP SSL:
+				case 993:
+					msgWriter.wIMAP(new SortMsg(client, thePacket.dst_ip.getCanonicalHostName()));
+					break;
 				default:
 					break;
 				}
 				}
-		}else if(packet instanceof UDPPacket){
+			if(packet instanceof UDPPacket){
 			if(((UDPPacket)packet).protocol==17){
 				//System.out.println("UPD: "+packet);
 				switch (((UDPPacket)packet).dst_port) {
@@ -229,20 +236,6 @@ public class Sorter{
 		
 			return searchString;
 	}
-	
-	public final static String getYoutubeSearchString(Packet p){
-		String header = convertData(p);
-		Matcher m = youtubeSearchPattern.matcher(header);
-		String searchString=null;
-		while (m.find()) {
-		     searchString = m.group(1);
-		    // s now contains "BAR"
-		}
-		//String searchString = header.split("\n")[0];
-		//String searchString = header.replaceAll(pattern, "$2");
-		
-			return searchString;
-	}
 	/**
 	 * Checks if it's an IP Adress or a hostname
 	 * @param ipAddress
@@ -270,7 +263,7 @@ public class Sorter{
 	}
 	
 	public final static String extractHost(TCPPacket p){
-		String hostname=null;
+		String hostname=p.dst_ip.getHostAddress();
 		String[] lines = convertData(p).split("\n");
 		if(lines[1].substring(0,4).equals("Host")){
 			hostname = lines[1].substring(6,lines[1].length()-1);

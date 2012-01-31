@@ -15,7 +15,8 @@ public class Writer {
 	}
 	
 	public void addMsg(WriteMsg msg){
-		if(!checkRecentMsgs()){
+		keepWritelistSmall();
+		if(!checkRecentMsgs(msg)){
 			writeMsgs.add(msg);
 			System.out.println("Writer: "+writeMsgs.lastElement().getMsg());
 		}
@@ -24,15 +25,23 @@ public class Writer {
 	public String getMsg(){
 		return writeMsgs.lastElement().getMsg();
 	}
-
-	private Boolean checkRecentMsgs(){
-		Boolean isKnown = false;
-		if(writeMsgs.size()>2){
-			for(int i=1; i<2; i++){
-				System.out.println("crm: "+writeMsgs.get(writeMsgs.size()-1).getSMsg().getServer().toString());
-			}	
+	
+	private void keepWritelistSmall(){
+		if(writeMsgs.size()>50){
+			writeMsgs.subList(20, writeMsgs.size()).clear();
+			System.out.println("ListSize: "+writeMsgs.size());
 		}
-		
+	}
+	private Boolean checkRecentMsgs(WriteMsg msg){
+		Boolean isKnown = false;
+		if(writeMsgs.size()>4){
+			for(int i=1; i<4; i++){
+				if(msg.getSMsg().getServer().equals(writeMsgs.get(writeMsgs.size()-i).getSMsg().getServer())){
+					isKnown=true;
+					break;
+				}
+			}
+		}
 		return isKnown;
 	}
 }
