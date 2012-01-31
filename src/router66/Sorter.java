@@ -5,6 +5,8 @@ import java.net.InetAddress;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
+import java.util.Iterator;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,8 +18,16 @@ import jpcap.packet.UDPPacket;
 
 public class Sorter{
 	final static Pattern googleSearchPattern = Pattern.compile("\\&q\\=(.*?)\\s");
-	private MsgWriter msgWriter;
+	final static Pattern youtubeSearchPattern = Pattern.compile("\\?search_query\\=(.*?)\\&");
+	static Vector<String> blackUrlList = new Vector<String>();
+	static {
+		blackUrlList.add("ytimg");
+		blackUrlList.add("gstatic");
+		blackUrlList.add("doubleclick");
+	}
 	
+	private MsgWriter msgWriter;
+	private Boolean blackListed = false;
 	private PacketReceiverImpl pri;
 	
 	public Sorter(MsgWriter msgWriter){
@@ -48,55 +58,74 @@ public class Sorter{
 				default:
 					break;
 			}
+			
+			String host = extractHost(thePacket);
+			String client = HostDict.HOSTS.get(((TCPPacket) packet).src_ip.getHostAddress());
+			
+			/**
+			 *  Checks against the Blacklist and prevent the package from being inspected
+			 */
+			Iterator<String> itr = blackUrlList.iterator();
+				while(itr.hasNext()){
+				 	if(host.indexOf(itr.next())!=-1){
+				 		blackListed=true;
+				 	}
+				}
+				
+			if(blackListed){
+					blackListed=false;
+				}else{
+			
+			/**
+			 * Package isn't blacklisted, so let's look 
+			 */
 			switch (((TCPPacket)packet).dst_port) {
 				/**
 				 * 	http package
 				 */
 				case 80:
-					//if(!validateIPAddress(dst)){
-					//System.out.println("web");
-					//System.out.println(convertHeader(thePacket));
 					/**
 					 * Google Search
 					 */
-					String googleReturn=getGoogleSearchString(thePacket);
-					if(googleReturn!=null){
-						try {
-							msgWriter.wSearchGoogle(new SortMsg(translateLocalHost(((TCPPacket) packet).src_ip.getHostAddress()), "", URLDecoder.decode(googleReturn.replace("+", " "),"UTF-8")));
-						} catch (UnsupportedEncodingException e) {
-							e.printStackTrace();
-						}
-					}else{
-						String host = extractHost(thePacket);
-						String client = HostDict.HOSTS.get(((TCPPacket) packet).src_ip.getHostAddress());
+					 if(host.indexOf("google")!=-1){
+							String googleReturn=getGoogleSearchString(thePacket);
+							try {
+								msgWriter.wSearchGoogle(new SortMsg(translateLocalHost(((TCPPacket) packet).src_ip.getHostAddress()), "", URLDecoder.decode(googleReturn.replace("+", " "),"UTF-8")));
+							} catch (UnsupportedEncodingException e) {
+								e.printStackTrace();
+							}
+						}						
 						/**
 						 * dropbox Web
 						 */
-						if(host.indexOf("dropbox")!=-1){
+						else if(host.indexOf("dropbox")!=-1){
 							msgWriter.wDropboxWeb(new SortMsg(client, ""));
-						}else if(host.indexOf("youtube")!=-1){
-							convertData(thePacket);
-						}else{
+						}
+						/**
+						 *  Youtube Web
+						 */
+						else if(host.indexOf("youtube")!=-1){
+							System.out.println(getYoutubeSearchString(thePacket));
+						}
 						/**
 						 * Standard Website
 						 */
-						msgWriter.wWebDomain(new SortMsg(client, host));
+						else{
+							msgWriter.wWebDomain(new SortMsg(client, host));
 						}
-					//}
-					}
-					break;
-				// SSL
+				/**
+				 * SSL Port
+				 */
 				case 443:
 					/**
 					 * 	Encrypted Stuff
 					 */
-					String host = thePacket.dst_ip.getHostName();
-					System.out.println("theHost: "+host);
-					if(!validateIPAddress(host)){
-						if(host.indexOf("1e100")!=-1){
-							System.out.println("google ssl");
-						}else if(host.indexOf("evernote")!=-1){
-							System.out.println("evernote ssl");
+					String sslHost = thePacket.dst_ip.getHostName();
+					if(!validateIPAddress(sslHost)){
+						if(sslHost.indexOf("1e100")!=-1){
+							//System.out.println("google ssl");
+						}else if(sslHost.indexOf("evernote")!=-1){
+							//System.out.println("evernote ssl");
 						}else{
 							msgWriter.wSSLDomain(new SortMsg(HostDict.HOSTS.get(((TCPPacket) packet).src_ip.getHostAddress()),thePacket.dst_ip.getHostName()));
 						}
@@ -112,6 +141,7 @@ public class Sorter{
 					break;
 				default:
 					break;
+				}
 				}
 		}else if(packet instanceof UDPPacket){
 			if(((UDPPacket)packet).protocol==17){
@@ -189,6 +219,20 @@ public class Sorter{
 	public final static String getGoogleSearchString(Packet p){
 		String header = convertData(p);
 		Matcher m = googleSearchPattern.matcher(header);
+		String searchString=null;
+		while (m.find()) {
+		     searchString = m.group(1);
+		    // s now contains "BAR"
+		}
+		//String searchString = header.split("\n")[0];
+		//String searchString = headergoogleSearchPattern.replaceAll(pattern, "$2");
+		
+			return searchString;
+	}
+	
+	public final static String getYoutubeSearchString(Packet p){
+		String header = convertData(p);
+		Matcher m = youtubeSearchPattern.matcher(header);
 		String searchString=null;
 		while (m.find()) {
 		     searchString = m.group(1);

@@ -15,12 +15,24 @@ public class Writer {
 	}
 	
 	public void addMsg(WriteMsg msg){
-		writeMsgs.add(msg);
-		System.out.println("Writer: "+writeMsgs.lastElement().getMsg());
-		//writeFile(writeMsgs.lastElement().getMsg());
+		if(!checkRecentMsgs()){
+			writeMsgs.add(msg);
+			System.out.println("Writer: "+writeMsgs.lastElement().getMsg());
+		}
 	}
 	
 	public String getMsg(){
 		return writeMsgs.lastElement().getMsg();
+	}
+
+	private Boolean checkRecentMsgs(){
+		Boolean isKnown = false;
+		if(writeMsgs.size()>2){
+			for(int i=1; i<2; i++){
+				System.out.println("crm: "+writeMsgs.get(writeMsgs.size()-1).getSMsg().getServer().toString());
+			}	
+		}
+		
+		return isKnown;
 	}
 }

@@ -7,26 +7,26 @@ public class MsgWriter {
 	}
 	public void wWebDomain(SortMsg sMsg){
 		String msg = sMsg.getClient()+" looks at "+sMsg.getServer();
-		writeOut(msg);
+		writeOut(msg, sMsg);
 	}
 	public void wSSLDomain(SortMsg sMsg){
 		String msg = sMsg.getClient()+" secrets are at "+sMsg.getServer();
-		writeOut(msg);
+		writeOut(msg, sMsg);
 	}
 	public void wSearchGoogle(SortMsg sMsg){
 		String msg = sMsg.getClient()+" searched for È"+sMsg.getAddArgs()[0]+"Ç";
-		writeOut(msg);
+		writeOut(msg, sMsg);
 	}
 	public void wDropboxLan(SortMsg sMsg){
 		String msg = sMsg.getClient()+"'s Dropbox is looking for friends.";
-		writeOut(msg);
+		writeOut(msg, sMsg);
 	}
 	public void wDropboxWeb(SortMsg sMsg){
 		String msg = sMsg.getClient()+"'s Dropbox checks for updates on the interwebz.";
-		writeOut(msg);
+		writeOut(msg, sMsg);
 	}
 	
-	private void writeOut(String msg){
-		writer.addMsg(new WriteMsg(msg,System.currentTimeMillis()));
+	private void writeOut(String msg, SortMsg sMsg){
+		writer.addMsg(new WriteMsg(msg,System.currentTimeMillis(),sMsg));
 	}
 }
