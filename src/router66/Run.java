@@ -19,14 +19,11 @@ import jpcap.NetworkInterfaceAddress;
 import jpcap.PacketReceiver;
 import jpcap.packet.*;
 
-public class Run extends PApplet implements PacketReceiver {
-	private Writer writer;
+public class Run implements PacketReceiver {
+	private Writer writer = new Writer();
 	private MsgWriter msgWriter = new MsgWriter(writer);
 	private Sorter sorter = new Sorter(msgWriter);
 	
-	public void setup(){
-		writer = new Writer(this);
-	}
 	public void receivePacket(Packet packet) {
 		String dst = null;
 		String src = null;
@@ -41,6 +38,7 @@ public class Run extends PApplet implements PacketReceiver {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		
 		NetworkInterface[] devices = JpcapCaptor.getDeviceList();
 		JpcapCaptor jpcap = null;
 		try {
