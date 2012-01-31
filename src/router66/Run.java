@@ -7,11 +7,8 @@
 
 package router66;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-
-import processing.core.PApplet;
 
 import jpcap.JpcapCaptor;
 import jpcap.NetworkInterface;
@@ -23,7 +20,6 @@ public class Run implements PacketReceiver {
 	private Writer writer = new Writer();
 	private MsgWriter msgWriter = new MsgWriter(writer);
 	private Sorter sorter = new Sorter(msgWriter);
-	
 	public void receivePacket(Packet packet) {
 		String dst = null;
 		String src = null;
@@ -37,16 +33,10 @@ public class Run implements PacketReceiver {
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception{
 		
 		NetworkInterface[] devices = JpcapCaptor.getDeviceList();
-		JpcapCaptor jpcap = null;
-		try {
-			jpcap = JpcapCaptor.openDevice(devices[2], 2000, false, 20);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		JpcapCaptor jpcap = JpcapCaptor.openDevice(devices[2], 2000, false, 20);
 		/**
 		 * List Network Interfaces
 		 */
@@ -62,7 +52,7 @@ public class Run implements PacketReceiver {
 //				System.out.println("    address:"+a.address + " " + a.subnet + " "
 //						+ a.broadcast);
 //		}
-			jpcap.loopPacket(-1, new Run());
+		jpcap.loopPacket(-1, new Run());
 	}
 	
 	
