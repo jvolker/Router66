@@ -34,7 +34,6 @@ public class Run implements PacketReceiver {
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception{
-		
 		NetworkInterface[] devices = JpcapCaptor.getDeviceList();
 		JpcapCaptor jpcap = JpcapCaptor.openDevice(devices[2], 2000, false, 20);
 		/**
