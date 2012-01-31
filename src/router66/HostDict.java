@@ -13,4 +13,11 @@ public class HostDict {
         //result.put("192.168.1.50", "lakshmi");
         return Collections.unmodifiableMap(result);
     }
+    public static String getHost(String ip){
+    	String host = HOSTS.get(ip);
+    	if(host==null){
+    		host = ip;
+    	}
+    	return host;
+    }
 }

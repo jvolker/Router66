@@ -35,44 +35,15 @@ public class Sorter{
 	public void sortPacket(Packet packet){
 		String dst = null;
 		String src = null;
+		
+		//System.out.println(convertData(packet));
+		
 		if(packet instanceof TCPPacket ){
 			TCPPacket thePacket = ((TCPPacket)packet);
 			dst = getHostName(thePacket.dst_ip);
 			src = getHostName(thePacket.src_ip);
-//			try {
-//				InetAddress t = InetAddress.getAllByName("hanuman.local")[0];
-//				System.out.println(InetAddress.getAllByName("hanuman.local")[0]);
-//			} catch (UnknownHostException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-			//System.out.println(new String(thePacket.toString()));
-
-			
 			String host = extractHost(thePacket);
 			String client = HostDict.HOSTS.get(((TCPPacket) packet).src_ip.getHostAddress());			
-			/**
-			 *  Checks against the Blacklist and prevent the package from being inspected
-			 */
-//			for (int i = 0; i < blackUrlList.size(); i++) {
-//				System.out.println(host.indexOf(blackUrlList.get(i)));
-//				if(host.indexOf(blackUrlList.get(i))!=-1){
-//					blackListed= true;
-//				}
-//			}
-//			Iterator<String> itr = blackUrlList.iterator();
-//				while(itr.hasNext()){
-//					//System.out.println(itr.hasNext());
-//					String c = itr.next();
-//				 	if(host.indexOf(c)!=-1){
-//				 		blackListed=true;
-//				 	}
-//			}
-			//System.out.println("unfiltered: "+thePacket.dst_port);	
-					
-			/**
-			 * Package isn't blacklisted, so let's look 
-			 */
 			switch (((TCPPacket)packet).dst_port) {
 				/**
 				 * 	http package
@@ -105,6 +76,9 @@ public class Sorter{
 						 * Standard Website
 						 */
 						else{
+							/**
+							 * Check if Website is Blacklisted 
+							 */
 							Boolean blackListed = false;
 							Iterator<String> itr = blackUrlList.iterator();
 							while(itr.hasNext()){
@@ -130,7 +104,7 @@ public class Sorter{
 						}else if(sslHost.indexOf("evernote")!=-1){
 							//System.out.println("evernote ssl");
 						}else{
-							msgWriter.wSSLDomain(new SortMsg(HostDict.HOSTS.get(((TCPPacket) packet).src_ip.getHostAddress()),thePacket.dst_ip.getHostName()));
+							msgWriter.wSSLDomain(new SortMsg(HostDict.getHost(((TCPPacket) packet).src_ip.getHostAddress()),thePacket.dst_ip.getHostName()));
 						}
 					}
 					//System.out.println(dst.indexOf("facebook"));

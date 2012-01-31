@@ -10,7 +10,19 @@ public class MsgWriter {
 		writeOut(msg, sMsg);
 	}
 	public void wSSLDomain(SortMsg sMsg){
-		String msg = sMsg.getClient()+" secrets are at "+sMsg.getServer();
+		/**
+		 * the randomizer picks a message
+		 */
+		int rMsg = (int)(Math.random()*1);
+		String msg = null;
+		switch(rMsg){
+			case 0:
+				msg = sMsg.getClient()+" secrets are at "+sMsg.getServer();
+				break;
+			case 1:
+				msg = "At "+sMsg.getServer()+" "+sMsg.getClient()+" hides his secrets";
+				break;
+		}
 		writeOut(msg, sMsg);
 	}
 	public void wSearchGoogle(SortMsg sMsg){
@@ -39,7 +51,6 @@ public class MsgWriter {
 		String msg = sMsg.getClient()+" checks mails at "+theServer;
 		writeOut(msg, sMsg);
 	}
-	
 	
 	private void writeOut(String msg, SortMsg sMsg){
 		writer.addMsg(new WriteMsg(msg,System.currentTimeMillis(),sMsg));
