@@ -91,6 +91,7 @@ public class Sorter{
 					 * 	Encrypted Stuff
 					 */
 					String host = thePacket.dst_ip.getHostName();
+					System.out.println("theHost: "+host);
 					if(!validateIPAddress(host)){
 						if(host.indexOf("1e100")!=-1){
 							System.out.println("google ssl");
