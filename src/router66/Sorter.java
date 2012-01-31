@@ -74,6 +74,8 @@ public class Sorter{
 						 */
 						if(host.indexOf("dropbox")!=-1){
 							msgWriter.wDropboxWeb(new SortMsg(client, ""));
+						}else if(host.indexOf("youtube")!=-1){
+							convertData(thePacket);
 						}else{
 						/**
 						 * Standard Website
@@ -88,8 +90,15 @@ public class Sorter{
 					/**
 					 * 	Encrypted Stuff
 					 */
-					if(!validateIPAddress(thePacket.dst_ip.getHostName())){
-						msgWriter.wSSLDomain(new SortMsg(HostDict.HOSTS.get(((TCPPacket) packet).src_ip.getHostAddress()),thePacket.dst_ip.getHostName()));	
+					String host = thePacket.dst_ip.getHostName();
+					if(!validateIPAddress(host)){
+						if(host.indexOf("1e100")!=-1){
+							System.out.println("google ssl");
+						}else if(host.indexOf("evernote")!=-1){
+							System.out.println("evernote ssl");
+						}else{
+							msgWriter.wSSLDomain(new SortMsg(HostDict.HOSTS.get(((TCPPacket) packet).src_ip.getHostAddress()),thePacket.dst_ip.getHostName()));
+						}
 					}
 					//System.out.println(dst.indexOf("facebook"));
 					break;
