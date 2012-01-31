@@ -6,9 +6,12 @@ import kindle.SocketServer;
 
 public class Writer {
 	private Vector<WriteMsg> writeMsgs = new Vector<WriteMsg>();
-	private SocketServer server = new SocketServer(writeMsgs);
+	private SocketServer server;
 	
 	public Writer(){
+        server = new SocketServer(this);
+		Thread s = new Thread(server);
+	    s.start();
 	}
 	
 	public void addMsg(WriteMsg msg){
@@ -17,4 +20,7 @@ public class Writer {
 		//writeFile(writeMsgs.lastElement().getMsg());
 	}
 	
+	public String getMsg(){
+		return writeMsgs.lastElement().getMsg();
+	}
 }

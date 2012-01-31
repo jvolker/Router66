@@ -5,7 +5,7 @@ import java.net.*;
 import java.security.*;
 import java.util.Vector;
 
-import router66.WriteMsg;
+import router66.Writer;
 
 /**
  * Title:        Sample Server
@@ -17,11 +17,15 @@ import router66.WriteMsg;
  * @version 1.0
  */
 
-public class SocketServer {
+public class SocketServer implements Runnable {
   private static int port=12345, maxConnections=0;
+  private Writer writer;
   // Listen for incoming connections and handle them
   //public static void main(String[] args) {
-  public SocketServer(Vector<WriteMsg> _writeMsgs) {
+  public SocketServer(Writer writer) {
+      this.writer=writer;
+  }
+  public void run() {
 	int i=0;
 
     try{
@@ -31,9 +35,9 @@ public class SocketServer {
 
       while((i++ < maxConnections) || (maxConnections == 0)){
         doComms connection;
-
+        
         server = listener.accept();
-        doComms conn_c= new doComms(server, _writeMsgs);
+        doComms conn_c= new doComms(server,writer);
         Thread t = new Thread(conn_c);
         t.start();
       }
@@ -42,18 +46,17 @@ public class SocketServer {
       ioe.printStackTrace();
     }
   }
-
 }
 
 class doComms implements Runnable {
-	private Vector<WriteMsg> writeMsgs;
 
     private Socket server;
     private String line,input;
-
-    doComms(Socket server, Vector<WriteMsg> _writeMsgs) {
-      writeMsgs = _writeMsgs;
+    private Writer writer;
+    
+    doComms(Socket server, Writer writer) {
       this.server=server;
+      this.writer=writer;
     }
 
     public void run () {
@@ -67,14 +70,14 @@ class doComms implements Runnable {
 
         while((line = in.readLine()) != null && !line.equals(".")) {
           input=input + line;
-          //out.println("I got:" + line);
-          out.println(writeMsgs.lastElement().getMsg());
+//          out.println("I got:" + line);
+          out.println(writer.getMsg());
         }
 
         // Now write to the client
 
-        System.out.println("Overall message is:" + input);
-        out.println("Overall message is:" + input);
+        System.out.println("Socket Server overall message is:" + input);
+        //out.println("Overall message is:" + input);
 
         server.close();
         
