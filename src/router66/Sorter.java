@@ -129,11 +129,24 @@ public class Sorter{
 					if(!validateIPAddress(sslHost)){
 						if(sslHost.indexOf("1e100")!=-1){
 							//System.out.println("google ssl");
-						}else if(sslHost.indexOf("evernote")!=-1){
-							msgWriter.wEvernote(new SortMsg(HostDict.getHost(((TCPPacket) packet).src_ip.getHostAddress()),""));
-							//System.out.println("evernote ssl");
-						}else{
-							msgWriter.wSSLDomain(new SortMsg(HostDict.getHost(((TCPPacket) packet).src_ip.getHostAddress()),thePacket.dst_ip.getHostName()));
+						}
+						/**
+						 * Evernote SSL
+						 */
+						else if(sslHost.indexOf("evernote")!=-1){
+							msgWriter.wEvernote(new SortMsg(client,""));
+						}
+						/**
+						 * Facebook SSL
+						 */
+						else if(sslHost.indexOf("facebook")!=-1){
+								msgWriter.wFacebook(new SortMsg(client, ""));							
+						}
+						/**
+						 * Standard SSL
+						 */
+						else{
+							msgWriter.wSSLDomain(new SortMsg(client,thePacket.dst_ip.getHostName()));
 						}
 					}
 					//System.out.println(dst.indexOf("facebook"));
