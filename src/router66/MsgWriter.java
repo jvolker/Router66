@@ -43,6 +43,21 @@ public class MsgWriter {
 		String msg = sMsg.getClient()+" is watching youtube.";
 		writeOut(msg, sMsg);
 	}
+	public void wFacebook(SortMsg sMsg){
+		int rMsg = (int)(Math.random()*2);
+		String msg = null;
+		switch(rMsg){
+			case 0:
+				msg = sMsg.getClient()+" procrastinates at facebook.";
+				break;
+			case 1:
+				msg = sMsg.getClient()+" visits his friends at facebook.";
+				break;
+			default:
+				break;
+		}
+		writeOut(msg, sMsg);
+	}
 	public void wIMAP(SortMsg sMsg){
 		String theServer;
 		if(sMsg.getServer().indexOf("1e100")!=-1){

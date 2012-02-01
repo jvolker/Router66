@@ -29,13 +29,12 @@ public class Writer {
 	private void keepWritelistSmall(){
 		if(writeMsgs.size()>50){
 			writeMsgs.subList(20, writeMsgs.size()).clear();
-			System.out.println("ListSize: "+writeMsgs.size());
 		}
 	}
 	private Boolean checkRecentMsgs(WriteMsg msg){
 		Boolean isKnown = false;
-		if(writeMsgs.size()>2){
-			for(int i=1; i<2; i++){
+		if(writeMsgs.size()>3){
+			for(int i=1; i<3; i++){
 				if(msg.getSMsg().getServer().equals(writeMsgs.get(writeMsgs.size()-i).getSMsg().getServer())){
 					isKnown=true;
 					break;

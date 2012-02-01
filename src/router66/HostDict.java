@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HostDict {
-	public static final Map<String, String> HOSTS = createMap();
+	private static final Map<String, String> HOSTS = createMap();
 
     private static Map<String, String> createMap() {
         Map<String, String> result = new HashMap<String, String>();

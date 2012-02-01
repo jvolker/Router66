@@ -17,12 +17,13 @@ import jpcap.packet.TCPPacket;
 import jpcap.packet.UDPPacket;
 
 public class Sorter{
-	final static Pattern googleSearchPattern = Pattern.compile("\\&q\\=(.*?)\\s");
+	final static Pattern googleSearchPattern = Pattern.compile("\\&q\\=(.*?)(\\s|\\#|\\&)");
 	//final static Pattern mdnsNamePattern = Pattern.compile("\\\0+(.*?)"); 
-	final static Pattern mdnsNamePattern = Pattern.compile(".*?([A-Za-z0-9]+?)[\\\t*?|\\\0*?]");
+	//final static Pattern mdnsNamePattern = Pattern.compile(".*?([A-Za-z0-9]+?)[\\\t*?|\\\0*?]");
 	static Vector<String> blackUrlList = new Vector<String>();
 	static {
 		blackUrlList.add("ytimg");
+		blackUrlList.add("twimg");
 		blackUrlList.add("gstatic");
 //		blackUrlList.add("doubleclick");
 		blackUrlList.add("wikimedia");
@@ -47,7 +48,7 @@ public class Sorter{
 			src = getHostName(thePacket.src_ip);
 
 			String host = extractHost(thePacket);
-			String client = HostDict.HOSTS.get(((TCPPacket) packet).src_ip.getHostAddress());			
+			String client = HostDict.getHost(((TCPPacket) packet).src_ip.getHostAddress());			
 			switch (((TCPPacket)packet).dst_port) {
 				/**
 				 * 	http package
@@ -87,13 +88,17 @@ public class Sorter{
 						 */
 						else if(host.indexOf("wikipedia")!=-1){
 							try {
-								msgWriter.wWikipedia(new SortMsg(translateLocalHost(((TCPPacket) packet).src_ip.getHostAddress()), "", URLDecoder.decode(extractWikipediaPage(thePacket).replace("_", " "),"UTF-8")));
+								msgWriter.wWikipedia(new SortMsg(client, "", URLDecoder.decode(extractWikipediaPage(thePacket).replace("_", " "),"UTF-8")));
 							} catch (UnsupportedEncodingException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-							
-							//msgWriter.wAdvertising(new SortMsg(client, ""));
+						}
+					 /**
+						 * Facebook
+						 */
+						else if(host.indexOf("facebook")!=-1){
+								msgWriter.wFacebook(new SortMsg(client, ""));							
 						}
 						/**
 						 * Standard Website
@@ -155,7 +160,7 @@ public class Sorter{
 				switch (udpPacket.dst_port) {
 				// DROPBOX
 				case 17500:
-					msgWriter.wDropboxLan(new SortMsg(HostDict.HOSTS.get(((TCPPacket) packet).src_ip.getHostAddress()), ""));
+					msgWriter.wDropboxLan(new SortMsg(HostDict.getHost(((TCPPacket) packet).src_ip.getHostAddress()), ""));
 					break;
 				// BROWSER
 				case 138:
@@ -292,7 +297,7 @@ public class Sorter{
 	}
 	
 	public String translateLocalHost(String ip){
-		String host = HostDict.HOSTS.get(ip);
+		String host = HostDict.getHost(ip);
 		if(host==null){
 			return ip;
 		}else{
