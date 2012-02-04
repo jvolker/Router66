@@ -1,14 +1,9 @@
 package router66;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.BufferedReader;
 
-import javax.swing.text.html.HTML.Tag;
-import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.text.html.HTMLEditorKit.ParserCallback;
-import javax.swing.text.MutableAttributeSet;
+
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import rita.RiGoogleSearch;
 import rita.RiHtmlParser;
@@ -18,13 +13,10 @@ public class MsgWriter{
 	private Writer writer;
 	RiGoogleSearch gp = new RiGoogleSearch();
 	RiLexicon lex = new RiLexicon();
-	@SuppressWarnings("deprecation")
 	RiHtmlParser rhp = new RiHtmlParser(null);
 	
 	public MsgWriter(Writer writer){
 		this.writer = writer;
-		//gp.setUserAgent("Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13");
-		//System.out.println(gp.getUserAgent());
 	}
 	public void wWebDomain(SortMsg sMsg){
 		String msg = sMsg.getClient()+" looks at "+sMsg.getServer();
@@ -71,33 +63,34 @@ public class MsgWriter{
 		writeOut(msg, sMsg);
 	}
 	public void wYoutubeWatch(SortMsg sMsg){
-//		 final List<String> title = new ArrayList<String>();
-//			URL url = null;
-//			try {
-//				url = new URL("http://"+sMsg.getAddArgs()[0]);
-//			} catch (MalformedURLException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			 System.out.println("URL: "+url);
-//			 rhp.setUserAgent("Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13");
-//			 rhp.customParse(url,
-//				        new ParserCallback() // an inner class
-//				        {
-//				          boolean isTitle = false;
-//				          public void handleStartTag(Tag t, MutableAttributeSet a, int pos) {
-//				            if (t == Tag.TITLE) isTitle = true;
-//				          }
-//				          public void handleText(char[] data, int pos) {
-//				        	  if (isTitle) title.add(new String(data));                
-//				          }
-//				          public void handleEndTag(Tag t, int pos) {
-//				            if (t == Tag.TITLE) isTitle = false;
-//				          }
-//				        }
-//				      );
-//		System.out.println("Title: ");//+title.get(0));
-		String msg = sMsg.getClient()+" is watching youtube.";
+		String title = null;
+			BufferedReader reader;
+			try {
+				Boolean tFound = false;
+				reader = WebsiteReader.read("http://"+sMsg.getAddArgs()[0]);		// website wird gelesen
+				String line = reader.readLine();
+				while (line != null) {					// zeile für zeile wird durchgegangen
+					if(tFound){							// letzte zeile war title
+						title=StringEscapeUtils.unescapeHtml4(line);
+						tFound = false;
+					}
+					if(line.indexOf("<title>")!=-1){	// wenn die zeile der title ist
+						tFound=true;					// muss die nächste zeile der tatsächliche titel sein (youtube spezifisch)
+					}
+					line = reader.readLine(); 
+				}
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			String msg;
+			if(title!=null){
+				msg = sMsg.getClient()+" is watching "+title.replaceAll("^\\s+", "")+" on youtube.";		
+			}else{
+				msg = sMsg.getClient()+" is watching youtube.";
+			}
+		
 		writeOut(msg, sMsg);
 	}
 	public void wFacebook(SortMsg sMsg){
