@@ -1,6 +1,10 @@
 package router66;
 
 import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -45,12 +49,49 @@ public class MsgWriter{
 		writeOut(msg, sMsg);
 	}
 	public void wSearchGoogle(SortMsg sMsg){
-		String searchString = sMsg.getAddArgs()[0];
+//		String num = null;
+//		BufferedReader reader;
+//		try {
+//			Boolean tFound = false;
+//			URL cgiURL = new URL("http://www.google.de/search?q="+sMsg.getAddArgs()[0]); 
+//			 HttpURLConnection connection = (HttpURLConnection) cgiURL.openConnection();
+//			 //URLConnection connection = cgiURL.openConnection(); 
+//			//connection.addRequestProperty( "User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_2) AppleWebKit/535.7 (KHTML, like Gecko) Chrome/16.0.912.77 Safari/535.7" );
+//			connection.setDoOutput(true);
+//			connection.setDoInput(true);
+//			connection.setRequestProperty(
+//                "User-Agent",
+//                "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
+//			connection.setRequestProperty("Referer", "http://www.google.de/");
+//			connection.connect();
+//			reader = new BufferedReader( new InputStreamReader(connection.getInputStream()));
+//			reader = WebsiteReader.read("http://www.google.de/search?q="+sMsg.getAddArgs()[0]);		// website wird gelesen
+//			String line = reader.readLine();
+//			while (line != null) {					// zeile für zeile wird durchgegangen
+//				if(line.indexOf("resultStats")!=-1){
+//					System.out.println(line);
+//				}
+//			reader.close();
+//				if(tFound){							// letzte zeile war title
+//					num=StringEscapeUtils.unescapeHtml4(line);
+//					tFound = false;
+//				}
+//				if(line.indexOf("")!=-1){	// wenn die zeile der title ist
+//					tFound=true;					// muss die nächste zeile der tatsächliche titel sein (youtube spezifisch)
+//				}
+//				line = reader.readLine(); 
+//			}
+//		} catch (Exception e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+		
+//		String searchString = sMsg.getAddArgs()[0];
 		String[] rhyme = lex.similarBySound(sMsg.getAddArgs()[0]);
 		//System.out.println(searchString);
-		int k = gp.getCount("\""+sMsg.getAddArgs()[0]+"\"");
-		System.out.println(gp.getBigram("god", "devil"));
-		System.out.println("hits: "+k);
+//		int k = gp.getCount("\""+sMsg.getAddArgs()[0]+"\"");
+//		System.out.println(gp.getBigram("god", "devil"));
+//		System.out.println("hits: "+k);
 		String msg = sMsg.getClient()+" searched for »"+sMsg.getAddArgs()[0]+"«. Did he mean "+rhyme[0]+" or "+rhyme[1]+"?";
 		writeOut(msg, sMsg);
 	}
@@ -63,7 +104,7 @@ public class MsgWriter{
 		writeOut(msg, sMsg);
 	}
 	public void wYoutubeWatch(SortMsg sMsg){
-		String title = null;
+			String title = null;
 			BufferedReader reader;
 			try {
 				Boolean tFound = false;

@@ -60,8 +60,9 @@ public class Sorter{
 					 */
 					 if(host.indexOf("google")!=-1){
 							String googleReturn=getGoogleSearchString(thePacket);
+							String gUrl = extractURL(thePacket);
 							try {
-								msgWriter.wSearchGoogle(new SortMsg(translateLocalHost(((TCPPacket) packet).src_ip.getHostAddress()), "", URLDecoder.decode(googleReturn.replace("+", " "),"UTF-8")));
+								msgWriter.wSearchGoogle(new SortMsg(translateLocalHost(((TCPPacket) packet).src_ip.getHostAddress()), "", URLDecoder.decode(googleReturn.replace("+", " "),"UTF-8"),gUrl));
 							} catch (UnsupportedEncodingException e) {
 								e.printStackTrace();
 							}

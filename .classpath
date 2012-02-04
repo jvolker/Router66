@@ -13,5 +13,6 @@
 	<classpathentry kind="lib" path="lib/support.jar"/>
 	<classpathentry kind="lib" path="lib/core.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang3-3.1.jar"/>
+	<classpathentry kind="lib" path="lib/rita.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

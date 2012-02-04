@@ -17,6 +17,7 @@ import jpcap.PacketReceiver;
 import jpcap.packet.*;
 
 public class Run implements PacketReceiver {
+	
 	private Writer writer = new Writer();
 	private MsgWriter msgWriter = new MsgWriter(writer);
 	private Sorter sorter = new Sorter(msgWriter);
