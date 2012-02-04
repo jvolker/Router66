@@ -76,7 +76,7 @@ class doComms implements Runnable {
 
         // Now write to the client
 
-        System.out.println("Socket Server overall message is:" + input);
+        //System.out.println("Socket Server overall message is:" + input);
         //out.println("Overall message is:" + input);
 
         server.close();

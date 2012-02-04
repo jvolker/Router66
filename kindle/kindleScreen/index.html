@@ -23,9 +23,11 @@
 	
 			xmlhttp.onreadystatechange=function() {
 		  		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+					//console.log("COMPARE: "+content+" ----- "+xmlhttp.responseText);
 					if (content != xmlhttp.responseText) {
 						displayedLength = 0;
 					    content = xmlhttp.responseText;
+						content = "null's Dropbox checks for updates on the interwebz.";
                    		writeText();
 					}
 					else setTimeout("getContent()",200);
@@ -40,7 +42,9 @@
 		}
 		writeText = function() {
 			if (displayedLength<=content.length) {
-				$('#text').html(content.substr(0,displayedLength));
+				//$('#text').html(content.substr(0,displayedLength));
+				$('#visible').html(content.substr(0,displayedLength));
+				$('#hidden').html(content.substr(displayedLength+1,content.length));
 				displayedLength++;
 				setTimeout(function () { writeText() },130); 
 			}		
@@ -62,6 +66,10 @@
   </head>
 
   <body>
- 	<div id="screen"><div id="text">...</div></div>
+ 	<div id="screen">
+		<div id="text">
+			<span id="visible">...</span><span id="hidden"></span>
+		</div>
+	</div>
  </body>
 </html>
