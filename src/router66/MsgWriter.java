@@ -1,9 +1,30 @@
 package router66;
 
-public class MsgWriter {
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.text.html.HTML.Tag;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.HTMLEditorKit.ParserCallback;
+import javax.swing.text.MutableAttributeSet;
+
+import rita.RiGoogleSearch;
+import rita.RiHtmlParser;
+import rita.RiLexicon;
+
+public class MsgWriter{
 	private Writer writer;
+	RiGoogleSearch gp = new RiGoogleSearch();
+	RiLexicon lex = new RiLexicon();
+	@SuppressWarnings("deprecation")
+	RiHtmlParser rhp = new RiHtmlParser(null);
+	
 	public MsgWriter(Writer writer){
 		this.writer = writer;
+		//gp.setUserAgent("Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13");
+		//System.out.println(gp.getUserAgent());
 	}
 	public void wWebDomain(SortMsg sMsg){
 		String msg = sMsg.getClient()+" looks at "+sMsg.getServer();
@@ -32,7 +53,13 @@ public class MsgWriter {
 		writeOut(msg, sMsg);
 	}
 	public void wSearchGoogle(SortMsg sMsg){
-		String msg = sMsg.getClient()+" searched for È"+sMsg.getAddArgs()[0]+"Ç";
+		String searchString = sMsg.getAddArgs()[0];
+		String[] rhyme = lex.similarBySound(sMsg.getAddArgs()[0]);
+		//System.out.println(searchString);
+		int k = gp.getCount("\""+sMsg.getAddArgs()[0]+"\"");
+		System.out.println(gp.getBigram("god", "devil"));
+		System.out.println("hits: "+k);
+		String msg = sMsg.getClient()+" searched for È"+sMsg.getAddArgs()[0]+"Ç. Did he mean "+rhyme[0]+" or "+rhyme[1]+"?";
 		writeOut(msg, sMsg);
 	}
 	public void wDropboxLan(SortMsg sMsg){
@@ -44,6 +71,32 @@ public class MsgWriter {
 		writeOut(msg, sMsg);
 	}
 	public void wYoutubeWatch(SortMsg sMsg){
+//		 final List<String> title = new ArrayList<String>();
+//			URL url = null;
+//			try {
+//				url = new URL("http://"+sMsg.getAddArgs()[0]);
+//			} catch (MalformedURLException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			 System.out.println("URL: "+url);
+//			 rhp.setUserAgent("Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13");
+//			 rhp.customParse(url,
+//				        new ParserCallback() // an inner class
+//				        {
+//				          boolean isTitle = false;
+//				          public void handleStartTag(Tag t, MutableAttributeSet a, int pos) {
+//				            if (t == Tag.TITLE) isTitle = true;
+//				          }
+//				          public void handleText(char[] data, int pos) {
+//				        	  if (isTitle) title.add(new String(data));                
+//				          }
+//				          public void handleEndTag(Tag t, int pos) {
+//				            if (t == Tag.TITLE) isTitle = false;
+//				          }
+//				        }
+//				      );
+//		System.out.println("Title: ");//+title.get(0));
 		String msg = sMsg.getClient()+" is watching youtube.";
 		writeOut(msg, sMsg);
 	}

@@ -18,6 +18,7 @@ import jpcap.packet.UDPPacket;
 
 public class Sorter{
 	final static Pattern googleSearchPattern = Pattern.compile("\\&q\\=(.*?)(\\s|\\#|\\&)");
+	final static Pattern urlStrip = Pattern.compile("GET\\s(.*?)\\s");
 	//final static Pattern mdnsNamePattern = Pattern.compile("\\\0+(.*?)"); 
 	//final static Pattern mdnsNamePattern = Pattern.compile(".*?([A-Za-z0-9]+?)[\\\t*?|\\\0*?]");
 	static Vector<String> blackUrlList = new Vector<String>();
@@ -75,7 +76,12 @@ public class Sorter{
 						 *  Youtube Web
 						 */
 						else if(host.indexOf("youtube")!=-1){
-							msgWriter.wYoutubeWatch(new SortMsg(client, ""));
+							String yUrl = extractURL(thePacket);
+							
+							if(yUrl.indexOf("watch?v")!=-1){
+								msgWriter.wYoutubeWatch(new SortMsg(client, "", yUrl));
+							}
+							
 						}	
 					 	/**
 						 * Advertising
@@ -297,6 +303,21 @@ public class Sorter{
 			hostname = lines[1].substring(6,lines[1].length()-1);
 		}
 		return hostname;
+	}
+	public final static String extractURL(TCPPacket p){
+		String url = null;
+		String get=null;
+		String[] lines = convertData(p).split("\n");
+		if(lines[0].substring(0,3).equals("GET")){
+			get = lines[0];//.substring(4);
+			Matcher m = urlStrip.matcher(get);
+			while (m.find()) {
+			     get = m.group(1);
+			}
+		}
+		
+		url = extractHost(p)+get;
+		return url;
 	}
 	
 	public final static String extractWikipediaPage(TCPPacket p){
