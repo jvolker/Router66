@@ -10,10 +10,10 @@ public class MsgWriter {
 		writeOut(msg, sMsg);
 	}
 	public void wSSLDomain(SortMsg sMsg){
-		/**
+		/*
 		 * the randomizer picks a message
 		 */
-		int rMsg = (int)(Math.random()*2);
+		int rMsg = (int)(Math.random()*3);
 		String msg = null;
 		switch(rMsg){
 			case 0:
@@ -21,6 +21,10 @@ public class MsgWriter {
 				break;
 			case 1:
 				msg = "At "+sMsg.getServer()+" "+sMsg.getClient()+" hides his secrets";
+				break;
+			case 2:
+				// ### Trennt Nachrichten
+				msg = sMsg.getServer()+" says Hello Client!###"+sMsg.getClient()+" says Hello Server";
 				break;
 			default:
 				break;
