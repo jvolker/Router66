@@ -1,12 +1,8 @@
 package router66;
 
 import java.io.BufferedReader;
-import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import jpcap.packet.Packet;
-
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
