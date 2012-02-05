@@ -36,8 +36,8 @@ div#text {
 	padding: 45px; /*20px*/
 	height: 415px; /*466px*/
 	width: 450px;
-	background-color: grey;
-/*	-webkit-transform: rotateZ(180deg);*/
+/*	background-color: grey;
+	-webkit-transform: rotateZ(180deg);*/
 }
 
 div#text span {
