@@ -11,6 +11,7 @@ public class HostDict {
         Map<String, String> result = new HashMap<String, String>();
         result.put("192.168.123.106", "lakshmi");
         result.put("192.168.123.109", "js");
+        result.put("192.168.1.106", "js");
         //result.put("192.168.1.50", "lakshmi");
         return Collections.unmodifiableMap(result);
     }

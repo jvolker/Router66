@@ -15,37 +15,49 @@
 	font-family: "GravurCondensed-Regular", sans-serif;
 /*	font-family: sans-serif;*/
 	text-align: left;
-	font-size: 60px; /* 90px */
-/*	overflow: hidden*/
+	font-size: 70px; /* 90px 
+	*/
 }
 
-#ruler { 
-	/*visibility: hidden;
-	white-space: nowrap;*/
-	position: absolute;
-	left:0px;
-	top: 900px;
-	background-color: grey;
-}
-
-div#screen {
+body {
 	overflow: hidden;
 }
 
-div#text {
-	padding: 65px; /*20px*/
-	padding-top: 30px;
-	height: 415px; /*466px*/
-	width: 690px;
-/*	line-height: 80px;*/
-/*	background-color: grey;
-	-webkit-transform: rotateZ(180deg);*/
+#ruler { 
+	visibility: hidden;
+	white-space: nowrap;
+	position: absolute;
+	left:0px;
+	top: 0px;
+	z-index: -1;
 }
 
-div#text span {
-	width: 150px;
-}	
-	
-div#text span#hidden {
-	visibility: hidden;
+div#screen {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 798px;
+	height: 506px;
+	background-color: black;
+}
+
+div#window {
+	margin-top: 7px;
+	margin-left:33px;				
+	width: 732px;
+	height: 465px;
+	background-color: white;
+	/*-webkit-transform: rotateZ(180deg);*/
+}
+div#text {
+	position: relative;
+	top:52px;
+	margin: 0 76px 0;	
+	background-color: white;
+}
+
+
+.line {
+	height: 88px;
+	background-color: white;
 }

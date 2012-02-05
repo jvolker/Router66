@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<!--<html lang="en" manifest="cache.manifest">-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>KindleScreen</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+	
+    <link rel="stylesheet" type="text/css" href="css/global.css" />
+	
+	  
+	<script src="js/jquery-1.7.1.min.js" type="text/javascript" charset="utf-8"></script>	
+	
+	<script type="text/javascript">
+	$(document).ready(function() {
+		var delay = 100;
+		var content = "...";
+		var displayedLength = 0;
+		
+		getContent = function() {
+			var xmlhttp=new XMLHttpRequest();
+	
+			xmlhttp.onreadystatechange=function() {
+		  		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+					//console.log("COMPARE: "+content+" ----- "+xmlhttp.responseText);
+					if (content != xmlhttp.responseText) {
+						displayedLength = 0;
+					    content = xmlhttp.responseText;
+					//	content = "null's Dropbox checks for updates on the interwebz.";
+                   		writeText();
+					}
+					else setTimeout("getContent()",200);
+					
+		    	}
+		  	}
+	
+			  
+			//xmlhttp.open("GET","helloClient.txt",true);
+			xmlhttp.open("GET","textReceiver.php",true);
+			xmlhttp.send();
+		}
+		writeText = function() {
+			if (displayedLength<=content.length) {
+				//$('#text').html(content.substr(0,displayedLength));
+				$('#visible').html(content.substr(0,displayedLength));
+				$('#hidden').html(content.substr(displayedLength+1,content.length));
+				displayedLength++;
+				setTimeout(function () { writeText() },130); 
+			}		
+			else {
+				setTimeout(function () { 
+					$('body').css("background-color","black");
+					setTimeout(function () { 
+						$('body').css("background-color","white");
+						getContent(); 
+					},50);
+				},1500);
+			}
+		}
+			
+		setTimeout("getContent()",0);
+	});
+	</script>
+	
+  </head>
+
+  <body>
+ 	<div id="screen">
+		<div id="text">
+			<span id="visible">...</span><span id="hidden"></span>
+		</div>
+	</div>
+ </body>
+</html>

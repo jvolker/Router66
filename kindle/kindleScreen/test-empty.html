@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>KindleScreen</title>
+	
+<style type="text/css">
+
+		* {
+			border: 0;
+			margin: 0;
+			text-align: left;
+			font-size: 70px;
+		}
+		
+		#screen {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 798px;
+				height: 506px;
+				background-color: black;
+		}
+		#window {
+				margin-top: 7px;
+				margin-left:33px;				
+				width: 732px;
+				height: 465px;
+				background-color: white;
+				-webkit-transform: rotateZ(180deg);
+		}
+		.line {
+			height: 88px;
+			background-color: yellow;
+		}
+		#ruler { 
+			visibility: hidden;
+			white-space: nowrap;
+			position: absolute;
+			left:0px;
+			top: 0px;
+			z-index: -1;
+		}
+</style>
+</head>
+<body>
+	<div id="screen"> 	
+		<span id="ruler"> asd asd sadsa sad</span>
+		<div id="window">
+			<div id="text">
+				<div class="line" id="line3"><br /></div>
+				<div class="line" id="line2"><br /></div>
+				<div class="line" id="line1"><br /></div>
+				<div class="line" id="line0"><br /></div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

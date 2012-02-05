@@ -13,63 +13,198 @@
 	<script src="js/jquery-1.7.1.min.js" type="text/javascript" charset="utf-8"></script>	
 	
 	<script type="text/javascript">
+	
 	$(document).ready(function() {
+		
 		var delay = 100;
 		var content = "...";
 		var displayedLength = 0;
+		var lines = new Array();
+		var currentLine = 0;
+
+		var lineNumbers = 4;
+		var containerWidth = $('#window').innerWidth()-130; //2*parseInt($('#text').css("padding"),10)
 		
+
+
+		String.prototype.visualLength = function() {
+			var ruler = $('#ruler');
+			ruler.html(String(this));
+
+			return ruler.width();
+		}
+
+		prepareLines = function() {
+			lines = new Array();
+			currentLine = 0;
+			
+			var words = content.split(" ");
+			var line = "";
+			
+			//write words and split lines
+		 	for (x in words) {
+				if (words[x] != "") {
+					var newLine = (line + words[x]);
+				
+					// break multiple messages 
+					if (words[x] == "###") {
+						lines.push(line);
+						line = ""
+					}
+					//break words longer than line
+					else if (words[x].visualLength() >= containerWidth) { 
+						console.log("oversized word");
+						
+						wordPart = words[x];
+						var len = wordPart.length;
+						while (wordPart.visualLength() >= containerWidth) {
+							if (wordPart.substr(0,len).visualLength() < containerWidth) {
+								console.log(wordPart.substr(0,len));
+								lines.push(wordPart.substr(0,len));
+								line = ""
+								wordPart = wordPart.substr(len,wordPart.length);
+								len = wordPart.length;
+							}
+							else len--;
+							
+							console.log("cutting");
+							
+						}
+						lines.push(wordPart);
+						line = ""
+					}
+					//add word to line
+					else if (newLine.visualLength() < containerWidth) line += words[x]+" ";
+					//if word doesn't fit anymore, start new line
+					else {
+						lines.push(line);
+						line = words[x]+" ";
+					}	
+					//push if this is the last word in message
+					if (x == words.length-1) lines.push(line);
+				}
+			}	
+			console.log("lines prepared: "+lines);
+			
+			/*for (x in lines) {
+				$('#text').html();
+			}*/
+			
+			
+		}
+
+
+		resetScreen = function() {
+			
+			$('body').css("background-color","black");
+			setTimeout(function () { 
+				$('body').css("background-color","white");
+		
+				var x;
+				for (x = 0; x < lineNumbers;x++)	{
+					$('#line'+x).html("");	
+				}		
+			},200);
+			
+		}
+		
+		shiftLines = function() {
+			
+			var x;
+			for (x = lineNumbers-1; x > 0;x--)	{
+				console.log(x);
+				$('#line'+x).html($('#line'+(x-1)).html());	
+			}
+			$('#line0').html("");
+		}
+			
 		getContent = function() {
 			var xmlhttp=new XMLHttpRequest();
-	
+
 			xmlhttp.onreadystatechange=function() {
 		  		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
 					//console.log("COMPARE: "+content+" ----- "+xmlhttp.responseText);
 					if (content != xmlhttp.responseText) {
-						displayedLength = 0;
-					    content = xmlhttp.responseText;
-					//	content = "null's Dropbox checks for updates on the interwebz.";
-                   		writeText();
+						content = xmlhttp.responseText;
+					//	content = "js's Dropbox checks for updates on the interwebz.";
+		
+						//resetScreen();
+						
+						shiftLines();
+						
+  						prepareLines();
+                 		writeText();
 					}
 					else setTimeout("getContent()",200);
-					
+
 		    	}
 		  	}
-	
-			  
-			//xmlhttp.open("GET","helloClient.txt",true);
+
+
 			xmlhttp.open("GET","textReceiver.php",true);
 			xmlhttp.send();
 		}
+		
 		writeText = function() {
-			if (displayedLength<=content.length) {
-				//$('#text').html(content.substr(0,displayedLength));
-				$('#visible').html(content.substr(0,displayedLength));
-				$('#hidden').html(content.substr(displayedLength+1,content.length));
+			//writing
+			if (currentLine< lines.length) { 
+				var words = lines[currentLine].split(" ");
+
+				var line = "";
+				var x;
+				
 				displayedLength++;
-				setTimeout(function () { writeText() },130); 
-			}		
-			else {
-				setTimeout(function () { 
-					$('body').css("background-color","black");
+				console.log("displayedLength: "+displayedLength);
+				
+				for (x = 0; x < displayedLength; x++) {
+					console.log("word: "+ words[x]);
+					line += words[x]+" ";
+				}
+				$('#line0').html(line);
+				console.log("writing line: "+line);
+
+
+
+				if (displayedLength == words.length) {
+					
 					setTimeout(function () { 
-						$('body').css("background-color","white");
-						getContent(); 
-					},50);
-				},1500);
+	
+						if(currentLine < lines.length-1) shiftLines();
+					
+						displayedLength = 0;
+						currentLine++;
+						writeText();
+					},500); //450
+				}
+				else {
+					setTimeout(function () { writeText() },500);					
+				}
+			}		
+			else { //reset Screen and request new content
+				setTimeout(function () { 
+					getContent(); 
+				},1000);
 			}
 		}
-			
-		setTimeout("getContent()",0);
+		setTimeout("getContent()",0);			
 	});
 	</script>
 	
   </head>
 
-  <body>
+  <body>		
+	<span id="ruler"></span>
  	<div id="screen">
-		<div id="text">
-			<span id="visible">...</span><span id="hidden"></span>
+		<div id="window">
+			<div id="text">
+				<div class="line" id="line3"></div>
+				<div class="line" id="line2"></div>
+				<div class="line" id="line1"></div>
+				<div class="line" id="line0"></div>
+			</div>
 		</div>
 	</div>
+	<!--<div id="rulercheck" style="background-color: black; color: white; width: 540px"> ...</div>-->
+	
  </body>
 </html>
