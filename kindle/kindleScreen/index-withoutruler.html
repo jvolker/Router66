@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 	
-    <link rel="stylesheet" type="text/css" href="css/global.css" />
+    <link rel="stylesheet" type="text/css" href="css/global-withoutruler.css" />
 	
 	  
 	<script src="js/jquery-1.7.1.min.js" type="text/javascript" charset="utf-8"></script>	
@@ -23,6 +23,9 @@
 		var lineNumbers = 4;
 		var currentTextLine = 0;
 		var currentDisplayLine = lineNumbers-1;
+		
+		var textStandardBottom = parseInt($('#text').css("bottom"));
+		var textStandardMinHeight = parseInt($('#text').css("min-height"));
 
 		var containerWidth = $('#window').innerWidth()-130; //2*parseInt($('#text').css("padding"),10)
 		
@@ -36,6 +39,7 @@
 		}
 
 		prepareLines = function() {
+			/*
 			lines = new Array();
 			currentTextLine = 0;
 			
@@ -86,6 +90,12 @@
 				}
 			}	
 			console.log("lines prepared: "+lines);
+			*/
+			
+			//everything in one line
+			currentTextLine = 0;
+			lines = new Array();
+			lines.push(content);
 			
 			/*for (x in lines) {
 				$('#text').html();
@@ -100,11 +110,9 @@
 			$('#window').css("background-color","black");
 			setTimeout(function () { 
 				$('#window').css("background-color","white");
-		
-				var x;
-				for (x = 0; x < lineNumbers;x++)	{
-					$('#line'+x).html("");	
-				}		
+				$('#text').html("");
+				$('#text').css("min-height",textStandardMinHeight+"px")
+				
 			},200);
 			
 		}
@@ -127,7 +135,9 @@
 					//console.log("COMPARE: "+content+" ----- "+xmlhttp.responseText);
 					if (content != xmlhttp.responseText) {
 						content = xmlhttp.responseText;
-						content = "js's Dropbox checks for updates on the interwebz. js's Dropbox checks for updates on the	interwebz. js's Dropbox checks for updates on the interwebz.";
+						
+						console.log(content);
+						//content = "I'm probably one of the few tracking this anymore - since my K1 needed a new batt., and is needing another (about 3 yrs in all!). You know, if you can find a K1 for cheap, that might be a good idea.";
 		
 						resetScreen();
 						
@@ -164,7 +174,18 @@
 				//	console.log("word: "+ words[x]);
 					line += words[x]+" ";
 				}
-				$('#line'+currentDisplayLine).html(line);
+				$('#text').html(line);
+				
+				/*
+				var textHeight = parseInt($('#text').css("height"));
+				console.log("textHeight "+textHeight);
+				var textMinHeight = parseInt($('#text').css("min-height"));
+				console.log("textMinHeight: "+textMinHeight);
+				var textNewBottom =  textStandardBottom+textHeight-textMinHeight;				
+				console.log("textStandardBottom: "+textStandardBottom);
+				console.log("text-bottom: "+textNewBottom);*/
+				$('#text').css("bottom",textStandardBottom+"px")
+				
 				//console.log("writing line: "+line);
 
 
@@ -200,14 +221,9 @@
   </head>
 
   <body>		
-	<span id="ruler"></span>
  	<div id="screen">
 		<div id="window">
 			<div id="text">
-				<div class="line" id="line3"></div>
-				<div class="line" id="line2"></div>
-				<div class="line" id="line1"></div>
-				<div class="line" id="line0"></div>
 			</div>
 		</div>
 	</div>

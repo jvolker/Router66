@@ -13,6 +13,6 @@ if (!$fp) {
     }
     fclose($fp);
 
-	echo htmlentities($in);
+	echo htmlspecialchars($in);
 }
 ?>

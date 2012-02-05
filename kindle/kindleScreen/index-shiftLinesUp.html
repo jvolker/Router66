@@ -20,10 +20,9 @@
 		var content = "...";
 		var displayedLength = 0;
 		var lines = new Array();
-		var lineNumbers = 4;
-		var currentTextLine = 0;
-		var currentDisplayLine = lineNumbers-1;
+		var currentLine = 0;
 
+		var lineNumbers = 4;
 		var containerWidth = $('#window').innerWidth()-130; //2*parseInt($('#text').css("padding"),10)
 		
 
@@ -37,7 +36,7 @@
 
 		prepareLines = function() {
 			lines = new Array();
-			currentTextLine = 0;
+			currentLine = 0;
 			
 			var words = content.split(" ");
 			var line = "";
@@ -97,9 +96,9 @@
 
 		resetScreen = function() {
 			
-			$('#window').css("background-color","black");
+			$('body').css("background-color","black");
 			setTimeout(function () { 
-				$('#window').css("background-color","white");
+				$('body').css("background-color","white");
 		
 				var x;
 				for (x = 0; x < lineNumbers;x++)	{
@@ -127,12 +126,11 @@
 					//console.log("COMPARE: "+content+" ----- "+xmlhttp.responseText);
 					if (content != xmlhttp.responseText) {
 						content = xmlhttp.responseText;
-						content = "js's Dropbox checks for updates on the interwebz. js's Dropbox checks for updates on the	interwebz. js's Dropbox checks for updates on the interwebz.";
+					//	content = "js's Dropbox checks for updates on the interwebz.";
 		
-						resetScreen();
+						//resetScreen();
 						
-						//shiftLinesUp();
-						currentDisplayLine = lineNumbers-1;
+						shiftLinesUp();
 						
   						prepareLines();
                  		writeText();
@@ -149,10 +147,8 @@
 		
 		writeText = function() {
 			//writing
-			
-			
-			if (currentTextLine< lines.length) { 
-				var words = lines[currentTextLine].split(" ");
+			if (currentLine< lines.length) { 
+				var words = lines[currentLine].split(" ");
 
 				var line = "";
 				var x;
@@ -161,25 +157,22 @@
 				console.log("displayedLength: "+displayedLength);
 				
 				for (x = 0; x < displayedLength; x++) {
-				//	console.log("word: "+ words[x]);
+					console.log("word: "+ words[x]);
 					line += words[x]+" ";
 				}
-				$('#line'+currentDisplayLine).html(line);
-				//console.log("writing line: "+line);
+				$('#line0').html(line);
+				console.log("writing line: "+line);
 
 
 
 				if (displayedLength == words.length) {
-	
-					//console.log("currentDisplayLine: "+currentDisplayLine);
+					
 					setTimeout(function () { 
 	
-						//if(currentTextLine < lines.length-1) shiftLinesUp();
-						if(currentDisplayLine == 0) shiftLinesUp();
-						
+						if(currentLine < lines.length-1) shiftLinesUp();
+					
 						displayedLength = 0;
-						currentTextLine++;
-						if (currentDisplayLine > 0) currentDisplayLine--;
+						currentLine++;
 						writeText();
 					},500); //450
 				}
@@ -190,7 +183,7 @@
 			else { //reset Screen and request new content
 				setTimeout(function () { 
 					getContent(); 
-				},1500);
+				},1000);
 			}
 		}
 		setTimeout("getContent()",0);			

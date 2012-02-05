@@ -52,9 +52,11 @@ div#window {
 
 
 div#text {
-	position: relative;
-	top:35px; 
+	position: absolute;
+	bottom:67px; 
 	margin: 0 53px 0;
+	min-height: 395px;
+	line-height: 100px;
 }
 .line {
 	height: 100px; 	
