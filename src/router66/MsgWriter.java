@@ -1,7 +1,11 @@
 package router66;
 
 import java.io.BufferedReader;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import jpcap.packet.Packet;
 
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -11,7 +15,7 @@ import rita.RiHtmlParser;
 import rita.RiLexicon;
 
 public class MsgWriter{
-	final static Pattern defineExtract = Pattern.compile("\\<div class\\=\"dndata\"\\>(.*?)(\\s|\\#|\\&)");
+	final static Pattern defineExtract = Pattern.compile("<div class\\=\"dndata\">(.*?)</div>");
 	
 	private Writer writer;
 	RiGoogleSearch gp = new RiGoogleSearch();
@@ -40,7 +44,7 @@ public class MsgWriter{
 				break;
 			case 2:
 				// ### Trennt Nachrichten
-				msg = sMsg.getServer()+" says Hello Client! ### "+sMsg.getClient()+" says Hello Server";
+				msg = sMsg.getServer()+" says “Hello Client!” ### "+sMsg.getClient()+" says “Hello Server”";
 				break;
 			default:
 				break;
@@ -137,9 +141,29 @@ public class MsgWriter{
 		writeOut(msg, sMsg);
 	}
 	public void wWikipedia(SortMsg sMsg){
-		System.out.println(rhp.fetch("http://dictionary.reference.com/browse/good"));
-		String msg = sMsg.getClient()+" learns on wikipedia something about »"+sMsg.getAddArgs()[0]+"«";
-		writeOut(msg, sMsg);
+		
+		String msg = null;
+		int rMsg = (int)(Math.random()*2);
+		switch(rMsg){
+			case 0:
+				String definitionReturn = rhp.fetch("http://dictionary.reference.com/browse/"+sMsg.getAddArgs()[0]);
+				Matcher m = defineExtract.matcher(definitionReturn);
+				String definition= null;
+				m.find();
+				definition = (((m.group().replaceAll("\\<.*?>","")).replaceAll("[ \t]+$", "")));
+				if(definition!=null){
+					msg = "On wikipedia "+sMsg.getClient()+" learned: "+definition+" about "+sMsg.getAddArgs()[0];
+				}
+				break;
+			case 1:
+				msg = sMsg.getClient()+" learns on wikipedia something about »"+sMsg.getAddArgs()[0]+"«.";		
+				break;
+			default:
+				break;
+		}
+		if(msg!=null){
+			writeOut(msg, sMsg);
+		}
 	}
 	public void wAmazon(SortMsg sMsg){
 		String msg = null;
