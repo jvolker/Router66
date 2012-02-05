@@ -3,8 +3,14 @@ package router66;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.text.html.HTML.Tag;
+import javax.swing.text.html.HTMLEditorKit.ParserCallback;
 
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -138,6 +144,8 @@ public class MsgWriter{
 		writeOut(msg, sMsg);
 	}
 	public void wWikipedia(SortMsg sMsg){
+
+
 		String msg = sMsg.getClient()+" learns on wikipedia something about È"+sMsg.getAddArgs()[0]+"Ç";
 		writeOut(msg, sMsg);
 	}

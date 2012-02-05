@@ -16,10 +16,10 @@ public class Writer {
 	
 	public void addMsg(WriteMsg msg){
 		keepWritelistSmall();
-		if(!checkRecentMsgs(msg)){
+	//	if(!checkRecentMsgs(msg)){
 			writeMsgs.add(msg);
 			System.out.println("Writer: "+writeMsgs.lastElement().getMsg());
-		}
+		//}
 	}
 	
 	public String getMsg(){
