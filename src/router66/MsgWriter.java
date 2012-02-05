@@ -64,7 +64,7 @@ public class MsgWriter{
 				break;
 			case 1:
 				String[] rhyme = lex.similarBySound(sMsg.getAddArgs()[0]);
-				msg = sMsg.getClient()+" searched for »"+sMsg.getAddArgs()[0]+"«. Did he mean "+rhyme[0]+" or "+rhyme[1]+"?";
+				msg = sMsg.getClient()+" searched for Â»"+sMsg.getAddArgs()[0]+"Â«. Did he mean "+rhyme[0]+" or "+rhyme[1]+"?";
 				break;
 			default:
 				break;
@@ -86,13 +86,13 @@ public class MsgWriter{
 				Boolean tFound = false;
 				reader = WebsiteReader.read("http://"+sMsg.getAddArgs()[0]);		// website wird gelesen
 				String line = reader.readLine();
-				while (line != null) {					// zeile fŸr zeile wird durchgegangen
+				while (line != null) {					// zeile fï¿½r zeile wird durchgegangen
 					if(tFound){							// letzte zeile war title
 						title=StringEscapeUtils.unescapeHtml4(line);
 						tFound = false;
 					}
 					if(line.indexOf("<title>")!=-1){	// wenn die zeile der title ist
-						tFound=true;					// muss die nŠchste zeile der tatsŠchliche titel sein (youtube spezifisch)
+						tFound=true;					// muss die nï¿½chste zeile der tatsï¿½chliche titel sein (youtube spezifisch)
 					}
 					line = reader.readLine(); 
 				}
@@ -103,7 +103,7 @@ public class MsgWriter{
 			
 			String msg;
 			if(title!=null){
-				msg = sMsg.getClient()+" is watching »"+title.replaceAll("^\\s+", "")+"« on youtube.";		
+				msg = sMsg.getClient()+" is watching Â»"+title.replaceAll("^\\s+", "")+"Â« on youtube.";		
 			}else{
 				msg = sMsg.getClient()+" is watching youtube.";
 			}
@@ -146,7 +146,7 @@ public class MsgWriter{
 	public void wWikipedia(SortMsg sMsg){
 
 
-		String msg = sMsg.getClient()+" learns on wikipedia something about »"+sMsg.getAddArgs()[0]+"«";
+		String msg = sMsg.getClient()+" learns on wikipedia something about Â»"+sMsg.getAddArgs()[0]+"Â«";
 		writeOut(msg, sMsg);
 	}
 	public void wAmazon(SortMsg sMsg){
