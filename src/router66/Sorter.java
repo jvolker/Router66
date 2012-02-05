@@ -19,6 +19,8 @@ import jpcap.packet.UDPPacket;
 public class Sorter{
 	final static Pattern googleSearchPattern = Pattern.compile("\\&q\\=(.*?)(\\s|\\#|\\&)");
 	final static Pattern urlStrip = Pattern.compile("GET\\s(.*?)\\s");
+	final static Pattern amazonSearchPattern = Pattern.compile("field-keywords\\=(.*?)\\&");
+	final static Pattern amazonProductPattern = Pattern.compile("\\/(.*?)\\/dp");
 	//final static Pattern mdnsNamePattern = Pattern.compile("\\\0+(.*?)"); 
 	//final static Pattern mdnsNamePattern = Pattern.compile(".*?([A-Za-z0-9]+?)[\\\t*?|\\\0*?]");
 	static Vector<String> blackUrlList = new Vector<String>();
@@ -49,7 +51,7 @@ public class Sorter{
 			src = getHostName(thePacket.src_ip);
 
 			String host = extractHost(thePacket);
-			String client = HostDict.getHost(((TCPPacket) packet).src_ip.getHostAddress());			
+			String client = HostDict.getHost(((TCPPacket) packet).src_ip.getHostAddress());
 			switch (((TCPPacket)packet).dst_port) {
 				/**
 				 * 	http package
@@ -106,6 +108,35 @@ public class Sorter{
 						 */
 						else if(host.indexOf("facebook")!=-1){
 								msgWriter.wFacebook(new SortMsg(client, ""));							
+						}
+					 /**
+						 * Amazon
+						 */
+						else if(host.indexOf("amazon")!=-1){
+							
+							if(extractURL(thePacket).indexOf("field-keywords")!=-1){
+								String searchString = getAmazonSearchString(thePacket);
+								if(searchString!=null){
+									msgWriter.wAmazon(new SortMsg(client, "","0",searchString));	
+								}
+							}else if(extractURL(thePacket).indexOf("/dp/")!=-1){
+								String productString = getAmazonProductString(thePacket);
+								if(productString!=null){
+									if(productString.indexOf("amazon")!=-1){
+										productString = productString.replaceAll("\\/(.*?)\\/", "");
+									}
+									try {
+										productString = URLDecoder.decode(productString,"UTF-8");
+									} catch (UnsupportedEncodingException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+									msgWriter.wAmazon(new SortMsg(client, "", "1", productString));
+								}
+							}else {
+								msgWriter.wAmazon(new SortMsg(client, "", "2"));
+							}
+															
 						}
 						/**
 						 * Standard Website
@@ -271,6 +302,26 @@ public class Sorter{
 		
 			return searchString;
 	}
+	public final static String getAmazonSearchString(Packet p){
+		String header = convertData(p);
+		Matcher m = amazonSearchPattern.matcher(header);
+		String searchString=null;
+		while (m.find()) {
+		     searchString = m.group(1);
+		}
+			return searchString;
+	}
+	public final static String getAmazonProductString(Packet p){
+		String header = convertData(p);
+		Matcher m = amazonProductPattern.matcher(header);
+		String searchString=null;
+		while (m.find()) {
+		     searchString = m.group(1);
+		}
+		
+			return searchString.replaceAll("-", " ");
+	}
+	
 	/**
 	 * Checks if it's an IP Adress or a hostname
 	 * @param ipAddress
