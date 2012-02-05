@@ -1,0 +1,22 @@
+<html>
+<head>
+<script type="text/javascript">
+function $(id) {
+return document.getElementById(id);
+}
+String.prototype.visualLength = function() {
+var ruler = $("ruler");
+ruler.innerHTML = this;
+return ruler.offsetWidth;
+}
+</script>
+</head>
+<body>
+<span id="ruler"></span>
+<script type="text/javascript">
+var s = "Some text";
+var len = s.visualLength();
+alert(len);
+</script>
+</body>
+</html>

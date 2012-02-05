@@ -14,19 +14,17 @@
 	
 	<script type="text/javascript">
 	
+	
 	$(document).ready(function() {
-		var lineNumbers = 3;
-
-
+		
 		String.prototype.visualLength = function() {
 			var ruler = $('#ruler');
 			ruler.html(String(this));
 			//console.log(ruler.width());
 			//return ruler.offsetWidth;
-
+			
 			return ruler.width();
 		}
-
 /*
 		String.prototype.trimToPx = function(length)
 		{
@@ -44,7 +42,7 @@
 
 		    return trimmed;
 		}
-
+		
 			var s = "iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii";
 			s = "mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm";
 			var len = s.visualLength();
@@ -53,25 +51,24 @@
 			//console.log(len);
 			$('#rulercheck').css("width",len*0.877+"px");
 		*/	
-
-
-
-
-
+			
+			
+			
+			
+			
 		var delay = 100;
 		var content = "...";
 		var displayedLength = 0;
 		var lines = new Array();
 		var currentLine = 0;
-
+		
 		prepareLinebreaks = function() {
 			var words = content.split(" ");
 			var line = "";
 		 	output = "";
 			for (x in words) {
 				var containerWidth = $('#text').innerWidth()-90; //2*parseInt($('#text').css("padding"),10)
-				var newLine = (line + words[x]);
-				if (newLine.visualLength() < containerWidth) line += words[x]+" ";
+				if ((line + words[x]).visualLength() < containerWidth) line += words[x]+" ";
 				else {
 					lines.push(line);
 					line = words[x]+" ";
@@ -79,17 +76,11 @@
 				if (x == words.length-1) lines.push(line);
 			}	
 			console.log(lines);
-			
-			for (x in lines) {
-				$('#text').html();
-			}
-			
-			
 		}
-
+		
 		getContent = function() {
 			var xmlhttp=new XMLHttpRequest();
-
+	
 			xmlhttp.onreadystatechange=function() {
 		  		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
 					//console.log("COMPARE: "+content+" ----- "+xmlhttp.responseText);
@@ -100,48 +91,35 @@
 
 						lines = new Array();
 						currentLine = 0;
-
+						
   						prepareLinebreaks();
                  		writeText();
 					}
 					else setTimeout("getContent()",200);
-
+					
 		    	}
 		  	}
-
-
+	
+			  
 			//xmlhttp.open("GET","helloClient.txt",true);
 			xmlhttp.open("GET","textReceiver.php",true);
 			xmlhttp.send();
 		}
 		writeText = function() {
-
-			//writing
-			if (currentLine< lines.length) { 
-				var words = lines[currentLine].split(" ");
-
-				var line = "";
-				var x;
-				for (x = 0; x < displayedLength; x++) {
-					line += words[x]+" ";
+			if (currentLine< lines.length) { //writing
+				if (displayedLength < lines[currentLine].length) {			
+					$('#visible').html(lines[currentLine].substr(0,displayedLength));
+					//$('#hidden').html(output.substr(displayedLength+1,content.length));
+					console.log(displayedLength +" --- "+lines[currentLine].length);
+					console.log(currentLine + " " + lines[currentLine]);
+					displayedLength++;
 				}
-				console.log(line);
-				$('#line'+(currentLine+1)).html(line);
-
-				//$('#hidden').html(output.substr(displayedLength+1,content.length));
-
-				//console.log(displayedLength +" --- "+lines[currentLine].length);
-				//console.log(currentLine + " " + lines[currentLine]);
-				displayedLength++;
-
-				if (displayedLength == words.length) {
-					
-					
+				else {
 					displayedLength = 0;
 					currentLine++;
 				}
-
-				setTimeout(function () { writeText() },300);
+				
+				setTimeout(function () { writeText() },130); 
 			}		
 			else { //reset Screen and request new content
 				setTimeout(function () { 
@@ -153,7 +131,8 @@
 				},1500);
 			}
 		}
-		setTimeout("getContent()",0);			
+			
+		setTimeout("getContent()",0);
 	});
 	</script>
 	
@@ -162,9 +141,7 @@
   <body>
  	<div id="screen">
 		<div id="text">
-				<span id="line3">3</span><br />
-				<span id="line2">2</span><br />
-				<span id="line1">1</span>
+			<span id="visible">...</span><span id="hidden"></span>
 		</div>
 	</div>
 	<div id="rulercheck" style="background-color: black; color: white; width: 540px"> ...</div>

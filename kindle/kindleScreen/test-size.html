@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>KindleScreen</title>
+	
+<style type="text/css">
+	@font-face {
+	                      font-family: 'GravurCondensed-Regular';
+	                      src: url('css/GravuConReg.eot');
+	     }
+
+	@font-face {
+	                      font-family: 'GravurCondensed-Regular';
+	                      src: url('css/GravuConReg.woff') format('woff'),
+	                      url('css/GravuConReg.svg#GravurCondensed-Regular') format('svg');
+	     }
+		* {
+			border: 0;
+			margin: 0;
+			font-family: "GravurCondensed-Regular", sans-serif;
+		/*	font-family: sans-serif;*/
+			text-align: left;
+			font-size: 200px; /* 30px */
+		/*	overflow: hidden*/
+		}
+</style>
+<script src="js/jquery-1.7.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		
+		var visible = false;
+		
+		fade = function() {
+			if (visible) {
+				$('#ruler').animate({ 
+				        marginLeft: "0",
+				        fontSize: "50px",
+						color: "blue"
+				      }, 1500 );
+				
+				visible = false;
+			}
+			else {
+				$('#ruler').animate({ 
+				        marginLeft: "0.6in",
+				        fontSize: "150px",
+						color: "black"
+				      }, 1500 );
+				visible = true;
+			}
+		
+			setTimeout(function () { 
+				fade();
+			},4000);
+		}
+	
+		fade();	
+	});
+</script>
+</head>
+<body>
+<span id="ruler">Test!</span>
+</body>
+</html>
