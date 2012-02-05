@@ -15,7 +15,7 @@
 	<script type="text/javascript">
 	
 	$(document).ready(function() {
-		var lineNumbers = 3;
+		var lineNumbers = 4;
 
 
 		String.prototype.visualLength = function() {
@@ -64,12 +64,15 @@
 		var lines = new Array();
 		var currentLine = 0;
 
-		prepareLinebreaks = function() {
+		prepareLines = function() {
+			lines = new Array();
+			currentLine = 0;
+			
 			var words = content.split(" ");
 			var line = "";
 		 	output = "";
 			for (x in words) {
-				var containerWidth = $('#text').innerWidth()-90; //2*parseInt($('#text').css("padding"),10)
+				var containerWidth = $('#text').innerWidth()-130; //2*parseInt($('#text').css("padding"),10)
 				var newLine = (line + words[x]);
 				if (newLine.visualLength() < containerWidth) line += words[x]+" ";
 				else {
@@ -87,6 +90,31 @@
 			
 		}
 
+
+		resetScreen = function() {
+			
+			$('body').css("background-color","black");
+			setTimeout(function () { 
+				$('body').css("background-color","white");
+		
+				var x;
+				for (x = 0; x < lineNumbers;x++)	{
+					$('#line'+x).html("");	
+				}		
+			},200);
+			
+		}
+		
+		shiftLines = function() {
+			
+			var x;
+			for (x = lineNumbers-1; x > 0;x--)	{
+				console.log(x);
+				$('#line'+x).html($('#line'+(x-1)).html());	
+			}
+			$('#line0').html("");
+		}
+			
 		getContent = function() {
 			var xmlhttp=new XMLHttpRequest();
 
@@ -98,10 +126,11 @@
 						//content = "null's Dropbox checks for updates on the interwebz.";
 						//$('#text').html(content.substr(0,displayedLength));
 
-						lines = new Array();
-						currentLine = 0;
-
-  						prepareLinebreaks();
+						//resetScreen();
+						
+						shiftLines();
+						
+  						prepareLines();
                  		writeText();
 					}
 					else setTimeout("getContent()",200);
@@ -114,8 +143,8 @@
 			xmlhttp.open("GET","textReceiver.php",true);
 			xmlhttp.send();
 		}
+		
 		writeText = function() {
-
 			//writing
 			if (currentLine< lines.length) { 
 				var words = lines[currentLine].split(" ");
@@ -125,8 +154,8 @@
 				for (x = 0; x < displayedLength; x++) {
 					line += words[x]+" ";
 				}
-				console.log(line);
-				$('#line'+(currentLine+1)).html(line);
+				//console.log(line);
+				$('#line0').html(line);
 
 				//$('#hidden').html(output.substr(displayedLength+1,content.length));
 
@@ -135,22 +164,24 @@
 				displayedLength++;
 
 				if (displayedLength == words.length) {
+					setTimeout(function () { 
+						console.log(currentLine+" "+lines.length);
+	
+						if(currentLine < lines.length-1) shiftLines();
 					
-					
-					displayedLength = 0;
-					currentLine++;
+						displayedLength = 0;
+						currentLine++;
+						writeText();
+					},950); //450
 				}
-
-				setTimeout(function () { writeText() },300);
+				else {
+					setTimeout(function () { writeText() },300);					
+				}
 			}		
 			else { //reset Screen and request new content
 				setTimeout(function () { 
-					$('body').css("background-color","black");
-					setTimeout(function () { 
-						$('body').css("background-color","white");
-						getContent(); 
-					},50);
-				},1500);
+					getContent(); 
+				},2000);
 			}
 		}
 		setTimeout("getContent()",0);			
@@ -162,9 +193,10 @@
   <body>
  	<div id="screen">
 		<div id="text">
-				<span id="line3">3</span><br />
-				<span id="line2">2</span><br />
-				<span id="line1">1</span>
+				<span id="line3"></span><br />
+				<span id="line2"></span><br />
+				<span id="line1"></span><br />
+				<span id="line0"></span>
 		</div>
 	</div>
 	<div id="rulercheck" style="background-color: black; color: white; width: 540px"> ...</div>

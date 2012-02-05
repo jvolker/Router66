@@ -64,7 +64,7 @@ public class MsgWriter{
 				break;
 			case 1:
 				String[] rhyme = lex.similarBySound(sMsg.getAddArgs()[0]);
-				msg = sMsg.getClient()+" searched for È"+sMsg.getAddArgs()[0]+"Ç. Did he mean "+rhyme[0]+" or "+rhyme[1]+"?";
+				msg = sMsg.getClient()+" searched for »"+sMsg.getAddArgs()[0]+"«. Did he mean "+rhyme[0]+" or "+rhyme[1]+"?";
 				break;
 			default:
 				break;
@@ -103,7 +103,7 @@ public class MsgWriter{
 			
 			String msg;
 			if(title!=null){
-				msg = sMsg.getClient()+" is watching "+title.replaceAll("^\\s+", "")+" on youtube.";		
+				msg = sMsg.getClient()+" is watching »"+title.replaceAll("^\\s+", "")+"« on youtube.";		
 			}else{
 				msg = sMsg.getClient()+" is watching youtube.";
 			}
@@ -146,7 +146,7 @@ public class MsgWriter{
 	public void wWikipedia(SortMsg sMsg){
 
 
-		String msg = sMsg.getClient()+" learns on wikipedia something about È"+sMsg.getAddArgs()[0]+"Ç";
+		String msg = sMsg.getClient()+" learns on wikipedia something about »"+sMsg.getAddArgs()[0]+"«";
 		writeOut(msg, sMsg);
 	}
 	public void wAmazon(SortMsg sMsg){
