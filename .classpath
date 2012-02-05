@@ -12,11 +12,7 @@
 	<classpathentry kind="lib" path="lib/rsglib.jar"/>
 	<classpathentry kind="lib" path="lib/core.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang3-3.1.jar"/>
-	<classpathentry kind="lib" path="lib/rita.jar" sourcepath="/Users/norrix/Downloads/RiTaTTS/rita/rita131.src.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="file:/Users/norrix/Downloads/RiTaTTS/rita/javadocs/"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="lib" path="lib/rita.jar"/>
 	<classpathentry kind="lib" path="lib/support.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
