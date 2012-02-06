@@ -47,7 +47,6 @@ div#window {
 	width: 732px;
 	height: 465px;
 	background-color: white;
-	/*-webkit-transform: rotateZ(180deg);*/
 }
 
 
@@ -57,6 +56,7 @@ div#text {
 	margin: 0 86px 0 53px;
 	min-height: 400px;
 	line-height: 100px;
+/*	-webkit-transform: rotateZ(180deg);*/
 }
 div#textOverlay {
 	position: absolute;
