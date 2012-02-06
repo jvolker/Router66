@@ -3,15 +3,10 @@ package router66;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.net.UnknownHostException;
 import java.util.Iterator;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import jpcap.PacketReceiver;
-import jpcap.packet.IPPacket;
 import jpcap.packet.Packet;
 import jpcap.packet.TCPPacket;
 import jpcap.packet.UDPPacket;
@@ -40,16 +35,8 @@ public class Sorter{
 		this.msgWriter = msgWriter;
 	}
 	public void sortPacket(Packet packet){
-		String dst = null;
-		String src = null;
-		
-		//System.out.println(convertData(packet));
-		
 		if(packet instanceof TCPPacket ){
 			TCPPacket thePacket = ((TCPPacket)packet);
-			dst = getHostName(thePacket.dst_ip);
-			src = getHostName(thePacket.src_ip);
-
 			String host = extractHost(thePacket);
 			String client = HostDict.getHost(((TCPPacket) packet).src_ip.getHostAddress());
 			switch (((TCPPacket)packet).dst_port) {
@@ -57,6 +44,7 @@ public class Sorter{
 				 * 	http package
 				 */
 				case 80:
+					if(!validateIPAddress(host)){
 					/**
 					 * Google Search
 					 */
@@ -156,6 +144,7 @@ public class Sorter{
 								msgWriter.wWebDomain(new SortMsg(client, host));
 							}
 						}
+					}
 				/**
 				 * SSL Port
 				 */
@@ -164,7 +153,7 @@ public class Sorter{
 					 * 	Encrypted Stuff
 					 */
 					String sslHost = thePacket.dst_ip.getHostName();
-					if(!validateIPAddress(sslHost)){
+					if(!validateIPAddress(sslHost)){				// host is no IP Adress
 						if(sslHost.indexOf("1e100")!=-1){
 							//System.out.println("google ssl");
 						}
@@ -184,7 +173,7 @@ public class Sorter{
 						 * Standard SSL
 						 */
 						else{
-							msgWriter.wSSLDomain(new SortMsg(client,thePacket.dst_ip.getHostName()));
+							msgWriter.wSSLDomain(new SortMsg(client,host));
 						}
 					}
 					//System.out.println(dst.indexOf("facebook"));
@@ -353,6 +342,19 @@ public class Sorter{
 		String[] lines = convertData(p).split("\n");
 		if(lines[1].substring(0,4).equals("Host")){
 			hostname = lines[1].substring(6,lines[1].length()-1);
+		}
+		hostname = shortUrl(hostname);
+		return hostname;
+	}
+	/**
+	 * Reduces a Domain String to domain.tld, ignores IP Adresses
+	 * @param hostname
+	 * @return
+	 */
+	public final static String shortUrl(String hostname){
+		String[] hostnameParts = hostname.split("\\.");
+		if(hostnameParts.length>2 && !validateIPAddress(hostname)){
+			hostname = hostnameParts[hostnameParts.length-2]+"."+hostnameParts[hostnameParts.length-1];
 		}
 		return hostname;
 	}

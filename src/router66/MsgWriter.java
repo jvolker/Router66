@@ -33,14 +33,14 @@ public class MsgWriter{
 		String msg = null;
 		switch(rMsg){
 			case 0:
-				msg = sMsg.getClient()+" secrets are at "+sMsg.getServer();
+				msg = sMsg.getClient()+"'s secrets are at "+sMsg.getServer();
 				break;
 			case 1:
 				msg = "At "+sMsg.getServer()+" "+sMsg.getClient()+" hides his secrets";
 				break;
 			case 2:
 				// ### Trennt Nachrichten
-				msg = sMsg.getServer()+" says “Hello Client!” ### "+sMsg.getClient()+" says “Hello Server”";
+				msg = sMsg.getServer()+" says “Hello Client!” ### "+sMsg.getClient()+" says “Hello Server!”";
 				break;
 			default:
 				break;
@@ -57,7 +57,7 @@ public class MsgWriter{
 				break;
 			case 1:
 				String[] rhyme = lex.similarBySound(sMsg.getAddArgs()[0]);
-				msg = sMsg.getClient()+" searched for »"+sMsg.getAddArgs()[0]+"«. Did he mean "+rhyme[0]+" or "+rhyme[1]+"?";
+				msg = sMsg.getClient()+" searched for "+sMsg.getAddArgs()[0]+". Did he mean "+rhyme[0]+" or "+rhyme[1]+"?";
 				break;
 			default:
 				break;
@@ -85,7 +85,7 @@ public class MsgWriter{
 			msg = sMsg.getClient()+"'s Dropbox checks for updates in the cloud.";
 			break;
 		case 1:
-			msg = sMsg.getClient()+": “Dear Internet, my dropbox need some updates.”";
+			msg = sMsg.getClient()+"says “Dear Internet, my dropbox need some updates.”";
 			break;
 		default:
 				break;
@@ -116,7 +116,7 @@ public class MsgWriter{
 			
 			String msg = null;
 			if(title!=null){
-				msg = sMsg.getClient()+" is watching »"+title.replaceAll("^\\s+", "")+"« on youtube.";		
+				msg = sMsg.getClient()+" is watching "+title.replaceAll("^\\s+", "")+" on youtube.";		
 			}else{
 				switch((int)(Math.random()*2)){
 				case 1:
@@ -215,7 +215,7 @@ public class MsgWriter{
 				}
 				break;
 			case 1:
-				msg = sMsg.getClient()+" learns on wikipedia something about »"+sMsg.getAddArgs()[0]+"«.";		
+				msg = sMsg.getClient()+" learns on wikipedia something about "+sMsg.getAddArgs()[0]+".";		
 				break;
 			default:
 				break;
