@@ -52,12 +52,30 @@ div#window {
 
 
 div#text {
-	position: relative;
-	top:35px; 
-	margin: 0 53px 0;
+	position: absolute;
+	bottom:69px; 
+	margin: 0 86px 0 53px;
+	min-height: 400px;
+	line-height: 100px;
 }
+div#textOverlay {
+	position: absolute;
+	top:7px;
+	left: 33px; 
+	width: 732px;
+	height: 40px;
+	z-index: 2;
+	background-color: white;
+}
+
 .line {
 	height: 100px; 	
+}
+#gradient {
+	z-index: 2;
+	position: absolute;
+	top: 0;
+	left: 140;
 }
 
 /*

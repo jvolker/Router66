@@ -15,54 +15,24 @@
 	<script type="text/javascript">
 	
 	$(document).ready(function() {
-		var lineNumbers = 4;
-
-
-		String.prototype.visualLength = function() {
-			var ruler = $('#ruler');
-			ruler.html(String(this));
-			//console.log(ruler.width());
-			//return ruler.offsetWidth;
-
-			return ruler.width();
-		}
-
-/*
-		String.prototype.trimToPx = function(length)
-		{
-		    var tmp = this;
-		    var trimmed = this;
-		    if (tmp.visualLength() > length)
-		    {
-		        trimmed += "...";
-		        while (trimmed.visualLength() > length)
-		        {
-		            tmp = tmp.substring(0, tmp.length-1);
-		            trimmed = tmp + "...";
-		        }
-		    }
-
-		    return trimmed;
-		}
-
-			var s = "iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii";
-			s = "mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm";
-			var len = s.visualLength();
-			//var stringCut = s.trimToPx(80);
-
-			//console.log(len);
-			$('#rulercheck').css("width",len*0.877+"px");
-		*/	
-
-
-
-
-
+		
 		var delay = 100;
 		var content = "...";
 		var displayedLength = 0;
 		var lines = new Array();
 		var currentLine = 0;
+
+		var lineNumbers = 4;
+		var containerWidth = $('#window').innerWidth()-130; //2*parseInt($('#text').css("padding"),10)
+		
+
+
+		String.prototype.visualLength = function() {
+			var ruler = $('#ruler');
+			ruler.html(String(this));
+
+			return ruler.width();
+		}
 
 		prepareLines = function() {
 			lines = new Array();
@@ -70,22 +40,55 @@
 			
 			var words = content.split(" ");
 			var line = "";
-		 	output = "";
-			for (x in words) {
-				var containerWidth = $('#text').innerWidth()-130; //2*parseInt($('#text').css("padding"),10)
-				var newLine = (line + words[x]);
-				if (newLine.visualLength() < containerWidth) line += words[x]+" ";
-				else {
-					lines.push(line);
-					line = words[x]+" ";
-				}	
-				if (x == words.length-1) lines.push(line);
-			}	
-			console.log(lines);
 			
-			for (x in lines) {
+			//write words and split lines
+		 	for (x in words) {
+				if (words[x] != "") {
+					var newLine = (line + words[x]);
+				
+					// break multiple messages 
+					if (words[x] == "###") {
+						lines.push(line);
+						line = ""
+					}
+					//break words longer than line
+					else if (words[x].visualLength() >= containerWidth) { 
+						console.log("oversized word");
+						
+						wordPart = words[x];
+						var len = wordPart.length;
+						while (wordPart.visualLength() >= containerWidth) {
+							if (wordPart.substr(0,len).visualLength() < containerWidth) {
+								console.log(wordPart.substr(0,len));
+								lines.push(wordPart.substr(0,len));
+								line = ""
+								wordPart = wordPart.substr(len,wordPart.length);
+								len = wordPart.length;
+							}
+							else len--;
+							
+							console.log("cutting");
+							
+						}
+						lines.push(wordPart);
+						line = ""
+					}
+					//add word to line
+					else if (newLine.visualLength() < containerWidth) line += words[x]+" ";
+					//if word doesn't fit anymore, start new line
+					else {
+						lines.push(line);
+						line = words[x]+" ";
+					}	
+					//push if this is the last word in message
+					if (x == words.length-1) lines.push(line);
+				}
+			}	
+			console.log("lines prepared: "+lines);
+			
+			/*for (x in lines) {
 				$('#text').html();
-			}
+			}*/
 			
 			
 		}
@@ -105,7 +108,7 @@
 			
 		}
 		
-		shiftLines = function() {
+		shiftLinesUp = function() {
 			
 			var x;
 			for (x = lineNumbers-1; x > 0;x--)	{
@@ -123,12 +126,11 @@
 					//console.log("COMPARE: "+content+" ----- "+xmlhttp.responseText);
 					if (content != xmlhttp.responseText) {
 						content = xmlhttp.responseText;
-						//content = "null's Dropbox checks for updates on the interwebz.";
-						//$('#text').html(content.substr(0,displayedLength));
-
+					//	content = "js's Dropbox checks for updates on the interwebz.";
+		
 						//resetScreen();
 						
-						shiftLines();
+						shiftLinesUp();
 						
   						prepareLines();
                  		writeText();
@@ -139,7 +141,6 @@
 		  	}
 
 
-			//xmlhttp.open("GET","helloClient.txt",true);
 			xmlhttp.open("GET","textReceiver.php",true);
 			xmlhttp.send();
 		}
@@ -151,37 +152,38 @@
 
 				var line = "";
 				var x;
+				
+				displayedLength++;
+				console.log("displayedLength: "+displayedLength);
+				
 				for (x = 0; x < displayedLength; x++) {
+					console.log("word: "+ words[x]);
 					line += words[x]+" ";
 				}
-				//console.log(line);
 				$('#line0').html(line);
+				console.log("writing line: "+line);
 
-				//$('#hidden').html(output.substr(displayedLength+1,content.length));
 
-				//console.log(displayedLength +" --- "+lines[currentLine].length);
-				//console.log(currentLine + " " + lines[currentLine]);
-				displayedLength++;
 
 				if (displayedLength == words.length) {
+					
 					setTimeout(function () { 
-						console.log(currentLine+" "+lines.length);
 	
-						if(currentLine < lines.length-1) shiftLines();
+						if(currentLine < lines.length-1) shiftLinesUp();
 					
 						displayedLength = 0;
 						currentLine++;
 						writeText();
-					},950); //450
+					},500); //450
 				}
 				else {
-					setTimeout(function () { writeText() },300);					
+					setTimeout(function () { writeText() },500);					
 				}
 			}		
 			else { //reset Screen and request new content
 				setTimeout(function () { 
 					getContent(); 
-				},2000);
+				},1000);
 			}
 		}
 		setTimeout("getContent()",0);			
@@ -190,16 +192,19 @@
 	
   </head>
 
-  <body>
+  <body>		
+	<span id="ruler"></span>
  	<div id="screen">
-		<div id="text">
-				<span id="line3"></span><br />
-				<span id="line2"></span><br />
-				<span id="line1"></span><br />
-				<span id="line0"></span>
+		<div id="window">
+			<div id="text">
+				<div class="line" id="line3"></div>
+				<div class="line" id="line2"></div>
+				<div class="line" id="line1"></div>
+				<div class="line" id="line0"></div>
+			</div>
 		</div>
 	</div>
-	<div id="rulercheck" style="background-color: black; color: white; width: 540px"> ...</div>
-	<span id="ruler"></span><br />	
+	<!--<div id="rulercheck" style="background-color: black; color: white; width: 540px"> ...</div>-->
+	
  </body>
 </html>

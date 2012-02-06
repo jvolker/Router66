@@ -7,9 +7,12 @@ if (!$fp) {
     $out = "text request\n.\n";
     fwrite($fp, $out);
 
+	$in = "";
     while (!feof($fp)) {	
-        echo fgets($fp, 128);
+        $in .= fgets($fp, 128);
     }
     fclose($fp);
+
+	echo htmlspecialchars($in);
 }
 ?>
