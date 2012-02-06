@@ -27,8 +27,8 @@
 		var textStandardBottom = parseInt($('#text').css("bottom"));
 		var textStandardMinHeight = parseInt($('#text').css("min-height"));
 
-		var containerWidth = $('#window').innerWidth()-130; //2*parseInt($('#text').css("padding"),10)
-		
+		//var containerWidth = $('#window').innerWidth()-130; //2*parseInt($('#text').css("padding"),10)
+		var containerWidth = 626;
 
 
 		String.prototype.visualLength = function() {
@@ -107,9 +107,11 @@
 
 		resetScreen = function() {
 			
+			$('#textOverlay').css("background-color","black");
 			$('#window').css("background-color","black");
 			setTimeout(function () { 
 				$('#window').css("background-color","white");
+				$('#textOverlay').css("background-color","white");
 				$('#text').html("");
 				$('#text').css("min-height",textStandardMinHeight+"px")
 				
@@ -137,7 +139,7 @@
 						content = xmlhttp.responseText;
 						
 						console.log(content);
-						//content = "I'm probably one of the few tracking this anymore - since my K1 needed a new batt., and is needing another (about 3 yrs in all!). You know, if you can find a K1 for cheap, that might be a good idea.";
+			//			content = "I'm probably oneofthefewtrackingthisanymoreoneofthefewtrackingthisanymore - since my K1  ### needed a new ### batt., and is needing another (about 3 yrs in all!). You know, if you can find a K1 for cheap, that might be a good idea.";
 		
 						resetScreen();
 						
@@ -170,12 +172,15 @@
 				displayedLength++;
 				console.log("displayedLength: "+displayedLength);
 				
-				for (x = 0; x < displayedLength; x++) {
-				//	console.log("word: "+ words[x]);
-					line += words[x]+" ";
-				}
-				$('#text').html(line);
+				var currentWordIndex = displayedLength-2;
 				
+			
+				if (words[currentWordIndex] == "###") {
+					words[currentWordIndex] = "<br />";
+				}
+				
+				$('#text').html($('#text').html()+"<span id=\"word"+currentWordIndex+"\">"+words[currentWordIndex]+"</span> ");
+				if($('#word'+currentWordIndex).width() >= containerWidth) $('#word'+currentWordIndex).css("word-break","break-all");
 				/*
 				var textHeight = parseInt($('#text').css("height"));
 				console.log("textHeight "+textHeight);
@@ -190,7 +195,7 @@
 
 
 
-				if (displayedLength == words.length) {
+				if (displayedLength == words.length+1) {
 	
 					//console.log("currentDisplayLine: "+currentDisplayLine);
 					setTimeout(function () { 
@@ -222,7 +227,9 @@
 
   <body>		
  	<div id="screen">
+		<!--<img src="gradient.png" id="gradient" />-->
 		<div id="window">
+			<div id="textOverlay"><br /></div>
 			<div id="text">
 			</div>
 		</div>
