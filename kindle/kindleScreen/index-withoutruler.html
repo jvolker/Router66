@@ -16,12 +16,18 @@
 	
 	$(document).ready(function() {
 		
-		var delay = 100;
+		var ips = new Array("localhost","192.168.123.105");
+		var serverMessages = new Array();
+		var ipIndex = 0;
+		
 		var content = "...";
 		var displayedLength = 0;
+		var messages = new Array();
 		var lines = new Array();
+		var words = new Array();
 		var lineNumbers = 4;
-		var currentTextLine = 0;
+		var currentWordIndex = 0;
+		var currentMessage;
 		var currentDisplayLine = lineNumbers-1;
 		
 		var textStandardBottom = parseInt($('#text').css("bottom"));
@@ -38,75 +44,17 @@
 			return ruler.width();
 		}
 
-		prepareLines = function() {
-			/*
-			lines = new Array();
-			currentTextLine = 0;
+		prepareMessages = function() {
 			
-			var words = content.split(" ");
-			var line = "";
-			
-			//write words and split lines
-		 	for (x in words) {
-				if (words[x] != "") {
-					var newLine = (line + words[x]);
-				
-					// break multiple messages 
-					if (words[x] == "###") {
-						lines.push(line);
-						line = ""
-					}
-					//break words longer than line
-					else if (words[x].visualLength() >= containerWidth) { 
-						console.log("oversized word");
-						
-						wordPart = words[x];
-						var len = wordPart.length;
-						while (wordPart.visualLength() >= containerWidth) {
-							if (wordPart.substr(0,len).visualLength() < containerWidth) {
-								console.log(wordPart.substr(0,len));
-								lines.push(wordPart.substr(0,len));
-								line = ""
-								wordPart = wordPart.substr(len,wordPart.length);
-								len = wordPart.length;
-							}
-							else len--;
-							
-							console.log("cutting");
-							
-						}
-						lines.push(wordPart);
-						line = ""
-					}
-					//add word to line
-					else if (newLine.visualLength() < containerWidth) line += words[x]+" ";
-					//if word doesn't fit anymore, start new line
-					else {
-						lines.push(line);
-						line = words[x]+" ";
-					}	
-					//push if this is the last word in message
-					if (x == words.length-1) lines.push(line);
-				}
-			}	
-			console.log("lines prepared: "+lines);
-			*/
-			
-			//everything in one line
-			currentTextLine = 0;
-			lines = new Array();
-			lines.push(content);
-			
-			/*for (x in lines) {
-				$('#text').html();
-			}*/
-			
-			
+			messages = new Array();
+			messages = content.split("###");
+
+			currentMessage = 0;			
 		}
 
 
 		resetScreen = function() {
-			
+			//console.log("reset screen")
 			$('#textOverlay').css("background-color","black");
 			$('#window').css("background-color","black");
 			setTimeout(function () { 
@@ -115,108 +63,88 @@
 				$('#text').html("");
 				$('#text').css("min-height",textStandardMinHeight+"px")
 				
-			},200);
+				writeText();
+			},500);
 			
-		}
-		
-		shiftLinesUp = function() {
-			
-			var x;
-			for (x = lineNumbers-1; x > 0;x--)	{
-				console.log(x);
-				$('#line'+x).html($('#line'+(x-1)).html());	
-			}
-			$('#line0').html("");
 		}
 			
 		getContent = function() {
 			var xmlhttp=new XMLHttpRequest();
+			ipIndex++;
+			if (ipIndex >= ips.length) ipIndex = 0;
 
 			xmlhttp.onreadystatechange=function() {
+				
 		  		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-					//console.log("COMPARE: "+content+" ----- "+xmlhttp.responseText);
-					if (content != xmlhttp.responseText) {
+					//console.log("serverMessages[ipIndex] "+ipIndex+": "+serverMessages[ipIndex]+" ----- "+xmlhttp.responseText);
+					if (serverMessages[ipIndex] != xmlhttp.responseText) {
 						content = xmlhttp.responseText;
 						
-						console.log(content);
-			//			content = "I'm probably oneofthefewtrackingthisanymoreoneofthefewtrackingthisanymore - since my K1  ### needed a new ### batt., and is needing another (about 3 yrs in all!). You know, if you can find a K1 for cheap, that might be a good idea.";
+						serverMessages[ipIndex] = xmlhttp.responseText;
+						
+						//console.log(content);
+						//content = "I'm probably oneofthefewtrackingthisanymoreoneofthefewtrackingthisanymore - since my K1 needed a new batt, and ### is needing another (about 3 yrs in all!). You know, if you can find a K1 for cheap, that might be a good idea.";
+					//	content = "since my K1  ### needed a new ### batt, and is needing another";
+					//	content = "barbel.webmasterpro.de says “Hello Client!” ### lakshmi says “Hello Server”";
 		
 						resetScreen();
 						
-						//shiftLinesUp();
-						currentDisplayLine = lineNumbers-1;
-						
-  						prepareLines();
-                 		writeText();
+						prepareMessages();
+		         		getMessage();
+												
 					}
 					else setTimeout("getContent()",200);
 
-		    	}
+		    	}	
+				
 		  	}
 
-
-			xmlhttp.open("GET","textReceiver.php",true);
+			xmlhttp.open("GET","textReceiver.php?ip="+ips[ipIndex],true);
 			xmlhttp.send();
+							
+		}
+		
+		getMessage = function() {
+			currentMessage = messages.shift();
+			
+			//console.log(messages);
+			//console.log(currentMessage);
+			
+			words = currentMessage.split(" ");
+			currentWordIndex = 0;
 		}
 		
 		writeText = function() {
+					
+			//console.log("words.length: "+ words.length + "currentWordIndex: "+ currentWordIndex);		
 			//writing
-			
-			
-			if (currentTextLine< lines.length) { 
-				var words = lines[currentTextLine].split(" ");
+			if (currentWordIndex < words.length) {
+				
+			//	console.log("currentWordIndex: "+currentWordIndex+" word: "+words[currentWordIndex]);
 
-				var line = "";
-				var x;
-				
-				displayedLength++;
-				console.log("displayedLength: "+displayedLength);
-				
-				var currentWordIndex = displayedLength-2;
-				
-			
-				if (words[currentWordIndex] == "###") {
-					words[currentWordIndex] = "<br />";
-				}
-				
-				$('#text').html($('#text').html()+"<span id=\"word"+currentWordIndex+"\">"+words[currentWordIndex]+"</span> ");
+				//console.log($('#text').html());	
+				$('#text').html( $('#text').html() + "<span id=\"word"+currentWordIndex+"\">"+words[currentWordIndex]+"</span> ");
 				if($('#word'+currentWordIndex).width() >= containerWidth) $('#word'+currentWordIndex).css("word-break","break-all");
-				/*
-				var textHeight = parseInt($('#text').css("height"));
-				console.log("textHeight "+textHeight);
-				var textMinHeight = parseInt($('#text').css("min-height"));
-				console.log("textMinHeight: "+textMinHeight);
-				var textNewBottom =  textStandardBottom+textHeight-textMinHeight;				
-				console.log("textStandardBottom: "+textStandardBottom);
-				console.log("text-bottom: "+textNewBottom);*/
+				
+				//console.log($('#text').html());
+				currentWordIndex++;
+				
 				$('#text').css("bottom",textStandardBottom+"px")
 				
-				//console.log("writing line: "+line);
-
-
-
-				if (displayedLength == words.length+1) {
-	
-					//console.log("currentDisplayLine: "+currentDisplayLine);
-					setTimeout(function () { 
-	
-						//if(currentTextLine < lines.length-1) shiftLinesUp();
-						if(currentDisplayLine == 0) shiftLinesUp();
-						
-						displayedLength = 0;
-						currentTextLine++;
-						if (currentDisplayLine > 0) currentDisplayLine--;
-						writeText();
-					},500); //450
-				}
-				else {
-					setTimeout(function () { writeText() },500);					
-				}
+				//write new word
+				setTimeout(function () { writeText() },500);					
 			}		
-			else { //reset Screen and request new content
-				setTimeout(function () { 
-					getContent(); 
-				},1500);
+			else { //end of message
+				//console.log("end of message");
+				setTimeout(function () {
+					if (messages.length == 0) getContent(); 
+					else { // muliple messages --> clean screen but no black reset
+						currentMessage++;
+						getMessage();
+						$('#text').html("");
+						writeText();
+					}
+				},1000);
 			}
 		}
 		setTimeout("getContent()",0);			

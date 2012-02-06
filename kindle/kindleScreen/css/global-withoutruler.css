@@ -38,7 +38,7 @@ div#screen {
 	left: 0;
 	width: 798px;
 	height: 506px;
-	background-color: black;
+	background-color: white; /* for testing on computer screen: black*/
 }
 
 div#window {
@@ -47,23 +47,23 @@ div#window {
 	width: 732px;
 	height: 465px;
 	background-color: white;
-	/*-webkit-transform: rotateZ(180deg);*/
+	-webkit-transform: rotateZ(180deg);
 }
 
 
 div#text {
 	position: absolute;
-	bottom:69px; 
+	bottom:41px; 
 	margin: 0 86px 0 53px;
 	min-height: 400px;
 	line-height: 100px;
 }
 div#textOverlay {
 	position: absolute;
-	top:7px;
-	left: 33px; 
+	top:-25px;
+	left: 0px; 
 	width: 732px;
-	height: 40px;
+	height: 50px;
 	z-index: 2;
 	background-color: white;
 }
