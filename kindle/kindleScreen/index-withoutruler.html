@@ -16,7 +16,10 @@
 	
 	$(document).ready(function() {
 		
-		var delay = 100;
+		var ips = new Array("localhost","192.168.123.105");
+		var serverMessages = new Array();
+		var ipIndex = 0;
+		
 		var content = "...";
 		var displayedLength = 0;
 		var messages = new Array();
@@ -67,12 +70,17 @@
 			
 		getContent = function() {
 			var xmlhttp=new XMLHttpRequest();
+			ipIndex++;
+			if (ipIndex >= ips.length) ipIndex = 0;
 
 			xmlhttp.onreadystatechange=function() {
+				
 		  		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-					//console.log("COMPARE: "+content+" ----- "+xmlhttp.responseText);
-					if (content != xmlhttp.responseText) {
+					//console.log("serverMessages[ipIndex] "+ipIndex+": "+serverMessages[ipIndex]+" ----- "+xmlhttp.responseText);
+					if (serverMessages[ipIndex] != xmlhttp.responseText) {
 						content = xmlhttp.responseText;
+						
+						serverMessages[ipIndex] = xmlhttp.responseText;
 						
 						//console.log(content);
 						//content = "I'm probably oneofthefewtrackingthisanymoreoneofthefewtrackingthisanymore - since my K1 needed a new batt, and ### is needing another (about 3 yrs in all!). You know, if you can find a K1 for cheap, that might be a good idea.";
@@ -87,11 +95,13 @@
 					}
 					else setTimeout("getContent()",200);
 
-		    	}
+		    	}	
+				
 		  	}
 
-			xmlhttp.open("GET","textReceiver.php",true);
-			xmlhttp.send();			
+			xmlhttp.open("GET","textReceiver.php?ip="+ips[ipIndex],true);
+			xmlhttp.send();
+							
 		}
 		
 		getMessage = function() {
