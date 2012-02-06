@@ -65,11 +65,31 @@ public class MsgWriter{
 		writeOut(msg, sMsg);
 	}
 	public void wDropboxLan(SortMsg sMsg){
-		String msg = sMsg.getClient()+"'s Dropbox is looking for friends.";
+		String msg = null;
+		switch((int)(Math.random()*2)){
+		case 0:
+			msg = sMsg.getClient()+"'s Dropbox is looking for friends.";
+			break;
+		case 1:
+			msg = sMsg.getClient()+" wants to put his files in your dropbox.";
+			break;
+		default:
+			break;
+		} 
 		writeOut(msg, sMsg);
 	}
 	public void wDropboxWeb(SortMsg sMsg){
-		String msg = sMsg.getClient()+"'s Dropbox checks for updates on the interwebz.";
+		String msg = null;
+		switch((int)(Math.random()*2)){
+		case 0:
+			msg = sMsg.getClient()+"'s Dropbox checks for updates in the cloud.";
+			break;
+		case 1:
+			msg = sMsg.getClient()+": “Dear Internet, my dropbox need some updates.”";
+			break;
+		default:
+				break;
+		}
 		writeOut(msg, sMsg);
 	}
 	public void wYoutubeWatch(SortMsg sMsg){
@@ -94,14 +114,23 @@ public class MsgWriter{
 				e1.printStackTrace();
 			}
 			
-			String msg;
+			String msg = null;
 			if(title!=null){
 				msg = sMsg.getClient()+" is watching »"+title.replaceAll("^\\s+", "")+"« on youtube.";		
 			}else{
-				msg = sMsg.getClient()+" is watching youtube.";
+				switch((int)(Math.random()*2)){
+				case 1:
+					msg = sMsg.getClient()+" is watching youtube.";
+					break;
+				case 2:
+					msg = sMsg.getClient()+"'s starring @ the tube.";
+					break;
+				default:
+					break;
+				}
+				
 			}
-		
-		writeOut(msg, sMsg);
+			writeOut(msg, sMsg);
 	}
 	public void wFacebook(SortMsg sMsg){
 		int rMsg = (int)(Math.random()*2);
@@ -125,15 +154,49 @@ public class MsgWriter{
 		}else{
 			theServer=sMsg.getServer();
 		}
-		String msg = sMsg.getClient()+" checks mails at "+theServer;
+		String msg = null;
+		switch((int)(Math.random()*2)){
+			case 1:
+				msg = sMsg.getClient()+" checks mails at "+theServer; 
+				break;
+			case 2:
+				msg = sMsg.getClient()+" is looking at "+theServer+" if there is a love letter.";
+				break;
+			default: 
+				break;
+		}
 		writeOut(msg, sMsg);
 	}
 	public void wEvernote(SortMsg sMsg){
-		String msg = sMsg.getClient()+" is writing something down on Evernote";
+		String msg = null;
+		switch((int)(Math.random()*2)){
+		case 1:
+			msg = sMsg.getClient()+" is writing something down on Evernote";
+			break;
+		case 2:
+			msg = sMsg.getClient()+" looks at the elephant in the cloud";
+			break;
+		default:
+			break;
+		}
 		writeOut(msg, sMsg);
 	}
 	public void wAdvertising(SortMsg sMsg){
-		String msg = sMsg.getClient()+" got some nice Ad-Banners";
+		String msg = null;
+		switch((int)(Math.random()*3)){
+		case 1:
+			msg = sMsg.getClient()+" got some nice Ad-Banners";
+			break;
+		case 2:
+			msg = "Hey "+sMsg.getClient()+" wanna buy this? or that?";
+			break;
+		case 3:
+			msg = sMsg.getClient()+" sees shiny pictures of shiny products.";
+			break;
+		
+		default:
+			break;
+		}
 		writeOut(msg, sMsg);
 	}
 	public void wWikipedia(SortMsg sMsg){
@@ -157,9 +220,7 @@ public class MsgWriter{
 			default:
 				break;
 		}
-		if(msg!=null){
 			writeOut(msg, sMsg);
-		}
 	}
 	public void wAmazon(SortMsg sMsg){
 		String msg = null;
@@ -170,12 +231,12 @@ public class MsgWriter{
 		}else if(sMsg.getAddArgs()[0].equals("1")){
 			msg = sMsg.getClient()+" is window shopping on amazon ";
 		}
-		if(msg!=null){
 			writeOut(msg, sMsg);
-		}
 	}
 	
 	private void writeOut(String msg, SortMsg sMsg){
-		writer.addMsg(new WriteMsg(msg,System.currentTimeMillis(),sMsg));
+		if(msg!=null){
+			writer.addMsg(new WriteMsg(msg,System.currentTimeMillis(),sMsg));
+		}
 	}
 }
