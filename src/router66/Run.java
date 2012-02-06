@@ -1,6 +1,12 @@
 /**
  * If it doesn't run try: Terminal -> sudo chmod 777 /dev/bpf*
  * 
+ * To disable the kindlescreensaver / autosleep:
+ * Home screen:
+ * (enter)	
+ * ;debugOn (enter)
+ * ~disableScreensaver (enter)
+ * ;debugOff (enter)
  * 
  */
 

@@ -85,7 +85,7 @@ public class MsgWriter{
 			msg = sMsg.getClient()+"'s Dropbox checks for updates in the cloud.";
 			break;
 		case 1:
-			msg = sMsg.getClient()+"says “Dear Internet, my dropbox need some updates.”";
+			msg = sMsg.getClient()+" says “Dear Internet, my dropbox needs some updates.”";
 			break;
 		default:
 				break;
@@ -225,7 +225,7 @@ public class MsgWriter{
 	public void wAmazon(SortMsg sMsg){
 		String msg = null;
 		if(sMsg.getAddArgs()[0].equals("0")){
-			msg = sMsg.getClient()+" is look on amazon for "+sMsg.getAddArgs()[1];
+			msg = sMsg.getClient()+" is looking on amazon for "+sMsg.getAddArgs()[1];
 		}else if(sMsg.getAddArgs()[0].equals("1")){
 			msg = sMsg.getClient()+" is going to buy "+sMsg.getAddArgs()[1];
 		}else if(sMsg.getAddArgs()[0].equals("1")){

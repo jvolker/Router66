@@ -26,6 +26,10 @@ public class Sorter{
 //		blackUrlList.add("doubleclick");
 		blackUrlList.add("wikimedia");
 		blackUrlList.add("chartbeat");
+		blackUrlList.add("cloudfront");
+		blackUrlList.add("turn");
+		blackUrlList.add("adsfac");
+		blackUrlList.add("2mdn");
 	}
 	
 	private MsgWriter msgWriter;
