@@ -30,7 +30,6 @@ public class Run implements PacketReceiver {
 	public void receivePacket(Packet packet) {
 		String dst = null;
 		String src = null;
-		
 		//if(packet instanceof TCPPacket ){ 
 			sorter.sortPacket(packet);
 		//}

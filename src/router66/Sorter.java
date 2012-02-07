@@ -65,7 +65,7 @@ public class Sorter{
 						 * dropbox Web
 						 */
 						else if(host.indexOf("dropbox")!=-1){
-							msgWriter.wDropboxWeb(new SortMsg(client, ""));
+							msgWriter.wDropboxWeb(new SortMsg(client, "",thePacket.toString()));
 						}
 						/**
 						 *  Youtube Web
