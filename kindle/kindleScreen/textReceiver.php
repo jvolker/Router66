@@ -1,6 +1,6 @@
 <?php
 
-$fp = fsockopen($_GET['ip'], 12345, $errno, $errstr, 5);
+$fp = fsockopen($_GET['ip'], 12345, $errno, $errstr, 2);
 if (!$fp) {
     echo "$errstr ($errno)\n";
 } else {
