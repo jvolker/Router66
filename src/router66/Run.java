@@ -1,6 +1,12 @@
 /**
  * If it doesn't run try: Terminal -> sudo chmod 777 /dev/bpf*
  * 
+ * To disable the kindlescreensaver / autosleep:
+ * Home screen:
+ * (enter)	
+ * ;debugOn (enter)
+ * ~disableScreensaver (enter)
+ * ;debugOff (enter)
  * 
  */
 
@@ -24,7 +30,6 @@ public class Run implements PacketReceiver {
 	public void receivePacket(Packet packet) {
 		String dst = null;
 		String src = null;
-		
 		//if(packet instanceof TCPPacket ){ 
 			sorter.sortPacket(packet);
 		//}
