@@ -17,13 +17,14 @@ public class Writer {
 	public void addMsg(WriteMsg msg){
 		keepWritelistSmall();
 	//	if(!checkRecentMsgs(msg)){
-			writeMsgs.add(msg);
+			//writeMsgs.add(msg);
 			System.out.println("Writer: "+writeMsgs.lastElement().getMsg());
 		//}
 	}
 	
 	public String getMsg(){
 		return writeMsgs.lastElement().getMsg();
+		//return "Pssst. Christoph is doing his presentation. No surfing now.";
 	}
 	
 	private void keepWritelistSmall(){

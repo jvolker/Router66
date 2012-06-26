@@ -302,7 +302,7 @@ public class Sorter{
 		while (m.find()) {
 		     searchString = m.group(1);
 		}
-			return searchString;
+			return searchString.replaceAll("\\+", " ");
 	}
 	public final static String getAmazonProductString(Packet p){
 		String header = convertData(p);
