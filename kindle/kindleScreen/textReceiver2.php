@@ -1,0 +1,3 @@
+<?php
+readfile("handWritten.txt");
+?>
